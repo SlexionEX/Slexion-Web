@@ -1,0 +1,243 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-en="404 - Lost in Cyberspace | Slexion">404 - 赛博迷失 | Slexion</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ===== Liquid Glass 背景彩色光晕 ===== */
+        .blobs {
+            position: fixed;
+            inset: -10%;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 18% 22%, rgba(0,255,255,0.32), transparent 45%),
+                radial-gradient(circle at 82% 28%, rgba(255,0,128,0.28), transparent 45%),
+                radial-gradient(circle at 50% 85%, rgba(60,110,255,0.30), transparent 50%);
+            filter: blur(24px);
+            animation: blobFloat 16s ease-in-out infinite alternate;
+        }
+        @keyframes blobFloat {
+            0% { transform: translate(0,0) scale(1); }
+            100% { transform: translate(3%,2%) scale(1.06); }
+        }
+
+        /* ===== Liquid Glass 玻璃面板 ===== */
+        .glass-panel {
+            position: relative;
+            z-index: 1;
+            background: rgba(255,255,255,0.05);
+            -webkit-backdrop-filter: blur(18px) saturate(180%) brightness(1.12);
+            backdrop-filter: blur(18px) saturate(180%) brightness(1.12);
+            border: 1px solid rgba(255,255,255,0.16);
+            border-radius: 28px;
+            padding: 60px 70px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), 0 12px 40px rgba(0,0,0,0.45);
+            overflow: hidden;
+        }
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 45%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.09), transparent);
+            pointer-events: none;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a12;
+            color: #0ff;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* 扫描线效果 */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.15),
+                rgba(0, 0, 0, 0.15) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            z-index: 10;
+        }
+
+        /* 霓虹故障文字 */
+        .glitch {
+            font-size: 8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            position: relative;
+            text-shadow: 
+                0 0 5px #0ff,
+                0 0 10px #0ff,
+                0 0 20px #f0f,
+                0 0 40px #f0f;
+            animation: glitch 1.5s infinite;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 #f0f;
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim 3s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 #0ff;
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim2 2s infinite linear alternate-reverse;
+        }
+
+        /* 副标题 */
+        .subtitle {
+            font-size: 1.5rem;
+            margin: 20px 0;
+            color: #ff0080;
+            text-shadow: 0 0 10px #ff0080;
+            letter-spacing: 3px;
+        }
+
+        /* 站点标识 */
+        .brand {
+            font-size: 1.2rem;
+            margin-top: 30px;
+            color: #7f00ff;
+            text-shadow: 0 0 8px #7f00ff;
+        }
+
+        /* 霓虹按钮 */
+        .home-btn {
+            margin-top: 40px;
+            padding: 15px 40px;
+            background: rgba(255,255,255,0.06);
+            -webkit-backdrop-filter: blur(12px) saturate(180%) brightness(1.1);
+            backdrop-filter: blur(12px) saturate(180%) brightness(1.1);
+            border: 1px solid rgba(0,255,255,0.5);
+            border-radius: 12px;
+            color: #0ff;
+            font-family: inherit;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .home-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.4), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .home-btn:hover::before {
+            left: 100%;
+        }
+
+        .home-btn:hover {
+            background: rgba(0, 255, 255, 0.1);
+            box-shadow: 0 0 20px #0ff, inset 0 0 20px rgba(0, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        /* 故障动画 */
+        @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(36px, 9999px, 113px, 0); }
+            20% { clip: rect(92px, 9999px, 74px, 0); }
+            40% { clip: rect(80px, 9999px, 170px, 0); }
+            60% { clip: rect(33px, 9999px, 85px, 0); }
+            80% { clip: rect(65px, 9999px, 19px, 0); }
+            100% { clip: rect(14px, 9999px, 79px, 0); }
+        }
+
+        @keyframes glitch-anim2 {
+            0% { clip: rect(79px, 9999px, 85px, 0); }
+            20% { clip: rect(124px, 9999px, 142px, 0); }
+            40% { clip: rect(120px, 9999px, 111px, 0); }
+            60% { clip: rect(118px, 9999px, 47px, 0); }
+            80% { clip: rect(72px, 9999px, 106px, 0); }
+            100% { clip: rect(16px, 9999px, 70px, 0); }
+        }
+
+        /* 背景霓虹网格 */
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
+            100% { transform: perspective(500px) rotateX(60deg) translateY(50px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="scanlines"></div>
+    <div class="grid-bg"></div>
+    <div class="blobs"></div>
+
+    <div class="glass-panel">
+        <h1 class="glitch" data-text="404">404</h1>
+        <p class="subtitle" data-en="You got lost in the data stream of cyberspace...">你迷失在了赛博空间的数据流中...</p>
+        <p class="brand">// Slexion.COM //</p>
+        <a href="/" class="home-btn" data-en="Back to terminal">返回数据终端</a>
+    </div>
+<script src="/navbar.js"></script>
+<script src="/account/auth.js"></script>
+<script src="/i18n.js"></script>
+<script src="/account.js"></script>
+</body>
+</html>

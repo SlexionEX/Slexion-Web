@@ -1,0 +1,167 @@
+/* ============================================================
+   Slexion 资源库 — Liquid Glass 主题
+   配合 dlsi.html 使用
+   ============================================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    background: #050118;
+    background-image:
+        radial-gradient(circle at 20% 15%, rgba(0,255,255,0.10), transparent 45%),
+        radial-gradient(circle at 85% 25%, rgba(255,0,255,0.08), transparent 45%);
+    color: #e0e0e0;
+    font-family: 'Segoe UI', sans-serif;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* ===== Liquid Glass 背景彩色光晕（让玻璃有东西可透） ===== */
+body::before {
+    content: "";
+    position: fixed;
+    inset: -10%;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 15% 20%, rgba(0,255,255,0.30), transparent 42%),
+        radial-gradient(circle at 85% 25%, rgba(255,0,255,0.26), transparent 42%),
+        radial-gradient(circle at 50% 85%, rgba(60,110,255,0.32), transparent 45%),
+        radial-gradient(circle at 90% 80%, rgba(140,60,255,0.24), transparent 40%);
+    filter: blur(24px);
+    animation: blobFloat 16s ease-in-out infinite alternate;
+}
+@keyframes blobFloat {
+    0% { transform: translate(0,0) scale(1); }
+    100% { transform: translate(3%,2%) scale(1.06); }
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 60px 20px 40px;
+    position: relative;
+    z-index: 1;
+}
+
+/* ===== 标题 ===== */
+header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+header h1 {
+    font-size: 40px;
+    letter-spacing: 4px;
+    color: #0ff;
+    text-shadow: 0 0 12px rgba(0,255,255,0.8);
+}
+.subtitle {
+    margin-top: 10px;
+    color: #a0a0c0;
+    letter-spacing: 3px;
+    font-size: 14px;
+}
+
+/* ===== Windows 卡片（Liquid Glass） ===== */
+.win-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 22px;
+}
+.win-card {
+    position: relative;
+    overflow: hidden;
+    background: rgba(255,255,255,0.05);
+    -webkit-backdrop-filter: blur(18px) saturate(180%) brightness(1.12);
+    backdrop-filter: blur(18px) saturate(180%) brightness(1.12);
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 20px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.08), 0 12px 32px rgba(0,0,0,0.40);
+    padding: 24px 20px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.win-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 45%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.09), transparent);
+    pointer-events: none;
+}
+.win-card:hover {
+    transform: translateY(-4px);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 0 16px 40px rgba(0,0,0,0.5), 0 0 24px rgba(0,255,255,0.25);
+}
+.win-card h2 {
+    color: #0ff;
+    text-shadow: 0 0 10px rgba(0,255,255,0.5);
+    margin-bottom: 16px;
+    font-size: 22px;
+}
+
+/* ===== 链接条目 ===== */
+.link-item {
+    margin-bottom: 14px;
+}
+.link-label {
+    display: block;
+    color: #8888aa;
+    font-size: 12px;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+}
+.link-input {
+    width: 100%;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(0,255,255,0.35);
+    border-radius: 8px;
+    color: #fff;
+    padding: 10px 12px;
+    font-family: monospace;
+    font-size: 12px;
+    outline: none;
+    margin-bottom: 8px;
+}
+.link-input:focus {
+    border-color: #0ff;
+    box-shadow: 0 0 10px rgba(0,255,255,0.4);
+}
+.copy-btn {
+    width: 100%;
+    background: linear-gradient(135deg, rgba(0,255,255,0.9), rgba(0,200,255,0.8));
+    color: #001018;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+.copy-btn:hover {
+    filter: brightness(1.15);
+    box-shadow: 0 0 16px rgba(0,255,255,0.5);
+}
+.copy-btn.copied {
+    background: linear-gradient(135deg, #39d98a, #2ec4b6);
+    color: #002010;
+}
+
+/* ===== 页脚 ===== */
+footer {
+    text-align: center;
+    margin-top: 44px;
+    color: #666699;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 640px) {
+    header h1 { font-size: 28px; }
+    .container { padding: 40px 16px 30px; }
+}

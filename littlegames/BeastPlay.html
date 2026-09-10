@@ -1,0 +1,1316 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-en="Animal Chess | Slexion">斗兽棋 | Slexion</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            padding: 20px;
+            position: relative;
+        }
+        .blobs {
+            position: fixed;
+            inset: -10%;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 20% 25%, rgba(0,255,255,0.26), transparent 45%),
+                radial-gradient(circle at 80% 30%, rgba(255,0,255,0.22), transparent 45%),
+                radial-gradient(circle at 50% 85%, rgba(60,110,255,0.30), transparent 50%);
+            filter: blur(24px);
+            animation: blobFloat 16s ease-in-out infinite alternate;
+        }
+        @keyframes blobFloat {
+            0% { transform: translate(0,0) scale(1); }
+            100% { transform: translate(3%,2%) scale(1.06); }
+        }
+        .glass-wrap {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            background: rgba(255,255,255,0.06);
+            -webkit-backdrop-filter: blur(18px) saturate(180%) brightness(1.12);
+            backdrop-filter: blur(18px) saturate(180%) brightness(1.12);
+            border: 1px solid rgba(255,255,255,0.16);
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), 0 12px 40px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+        .glass-wrap::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 45%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.09), transparent);
+            pointer-events: none;
+        }
+        #board {
+            display: grid;
+            grid-template-columns: repeat(7, 60px);
+            grid-template-rows: repeat(9, 60px);
+            gap: 0px;
+            background: #2a2a2a;
+            border: 2px solid #555;
+            margin: 0 auto;
+        }
+        .cell {
+            width: 60px;
+            height: 60px;
+            border: 1px solid #444;
+            background: #e8d5b5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+        }
+        .cell svg { width: 44px; height: 44px; }
+        .river { background: #4a90d9; }
+        .trap-active { background: #ffaa00; opacity: 0.8; }
+        .trap-inactive { background: #888; opacity: 0.4; }
+        .den-blue { background: #4444ff; opacity: 0.3; border: 3px solid #0000ff; }
+        .den-red { background: #ff4444; opacity: 0.3; border: 3px solid #ff0000; }
+        .piece-red svg { filter: drop-shadow(0 0 3px #ff6b6b); }
+        .piece-blue svg { filter: drop-shadow(0 0 3px #6bb5ff); }
+        .selected { outline: 3px solid #f1c40f; }
+        .valid-move { background: #4CAF50; opacity: 0.5; }
+        .valid-move::after {
+            content: '';
+            position: absolute;
+            width: 20px; height: 20px;
+            background: rgba(76,175,80,0.8);
+            border-radius: 50%;
+        }
+        .status { margin-top: 14px; font-size: 15px; min-height: 22px; }
+        button {
+            padding: 10px 20px;
+            font-size: 15px;
+            margin: 5px;
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s, opacity .2s;
+        }
+        button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,212,255,0.4); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .btn-danger { background: linear-gradient(135deg, #ff5f6d, #e74c3c); }
+        .btn-gray { background: rgba(255,255,255,0.15); }
+        .info { font-size: 13px; color: #999; margin-top: 10px; }
+        .hidden { display: none !important; }
+
+        /* ===== 大厅 ===== */
+        .lobby-card { padding: 10px; }
+        .game-title {
+            font-size: 28px; margin: 0 0 4px;
+            background: linear-gradient(90deg, #00e5ff, #ff00ff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .lobby-sub { color: #999; margin: 0 0 18px; font-size: 14px; }
+        .lobby-actions { display: flex; gap: 10px; justify-content: center; margin-bottom: 16px; flex-wrap: wrap; }
+        .create-btn {
+            padding: 12px 24px; font-size: 15px; font-weight: 600;
+            background: linear-gradient(135deg, #00e5ff, #ff00ff); color: #000;
+            border-radius: 14px;
+        }
+        .refresh-btn { background: rgba(255,255,255,0.12); }
+        .room-list {
+            max-height: 340px; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 8px;
+            padding: 4px;
+        }
+        .room-item {
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 14px;
+            padding: 12px 16px;
+            transition: background .2s, border-color .2s;
+            gap: 10px;
+        }
+        .room-item:hover { background: rgba(0,229,255,0.1); border-color: rgba(0,229,255,0.4); }
+        .room-id { font-family: monospace; font-size: 14px; color: #00d4ff; font-weight: 600; }
+        .room-players { font-size: 13px; color: #ccc; flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .room-join-btn { padding: 6px 16px; font-size: 13px; }
+        .room-empty { text-align: center; color: #888; padding: 30px 0; font-size: 14px; }
+        .room-status { font-size: 12px; padding: 3px 10px; border-radius: 20px; }
+        .room-status.waiting { background: rgba(255,170,0,0.2); color: #ffaa00; }
+        .room-status.playing { background: rgba(76,175,80,0.2); color: #4CAF50; }
+        .room-status.full { background: rgba(255,80,80,0.2); color: #ff6b6b; }
+
+        /* ===== 等待界面 ===== */
+        .waiting-card { padding: 10px; }
+        .waiting-sub { color: #999; font-size: 14px; margin: 8px 0 18px; }
+        .seat-list { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
+        .seat {
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+            padding: 14px 20px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            font-size: 15px;
+            min-height: 52px;
+        }
+        .seat .seat-icon { font-size: 22px; }
+        .seat .seat-name { font-weight: 600; }
+        .seat .seat-tag { font-size: 12px; padding: 3px 10px; border-radius: 20px; background: rgba(0,229,255,0.15); color: #00d4ff; }
+        .seat.empty { border-style: dashed; color: #777; }
+        .waiting-tip { color: #888; font-size: 13px; margin-top: 14px; }
+
+        /* ===== 游戏头部 ===== */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 13px;
+            gap: 8px;
+        }
+        .game-header .side {
+            display: flex; align-items: center; gap: 6px;
+            padding: 6px 12px; border-radius: 20px;
+            background: rgba(255,255,255,0.08);
+            min-width: 90px; justify-content: center;
+        }
+        .online-indicator { display: inline-block; width: 9px; height: 9px; border-radius: 50%; }
+        .online { background: #4CAF50; }
+        .offline { background: #666; }
+        .turn-indicator { padding: 7px 14px; border-radius: 20px; font-weight: bold; font-size: 13px; white-space: nowrap; }
+        .turn-red { background: rgba(231,76,60,0.3); color: #ff6b6b; }
+        .turn-blue { background: rgba(52,152,219,0.3); color: #6bb5ff; }
+
+        /* ===== 登录提示弹窗 ===== */
+        .login-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.85);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 99999;
+            background-image: radial-gradient(circle at 20% 30%, rgba(0,229,255,0.15), transparent 50%),
+                              radial-gradient(circle at 80% 70%, rgba(255,0,255,0.12), transparent 50%);
+        }
+        .login-box {
+            background: rgba(15,15,30,0.92);
+            -webkit-backdrop-filter: blur(24px) saturate(180%) brightness(1.15);
+            backdrop-filter: blur(24px) saturate(180%) brightness(1.15);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 24px;
+            padding: 40px 48px;
+            text-align: center;
+            max-width: 420px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+        .login-icon { font-size: 52px; margin-bottom: 14px; }
+        .login-box h1 {
+            font-size: 26px; color: #fff; margin-bottom: 10px;
+            background: linear-gradient(90deg, #00e5ff, #ff00ff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .login-box p { color: #aaa; margin-bottom: 24px; font-size: 14px; line-height: 1.6; }
+        .login-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .login-btn {
+            padding: 12px 26px; border-radius: 12px; font-size: 14px; font-weight: bold;
+            cursor: pointer; text-decoration: none; border: none; font-family: inherit;
+        }
+        .login-btn-home { background: rgba(255,255,255,0.08); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+        .login-btn-go { background: linear-gradient(90deg, #00e5ff, #ff00ff); color: #000; }
+
+        @media (max-width: 600px) {
+            #board { grid-template-columns: repeat(7, 45px); grid-template-rows: repeat(9, 45px); }
+            .cell { width: 45px; height: 45px; }
+            .cell svg { width: 34px; height: 34px; }
+            .glass-wrap { padding: 16px; }
+            .game-header { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="blobs"></div>
+    <div class="glass-wrap">
+        <!-- 主菜单 -->
+        <div id="menuScreen" class="menu-screen">
+            <h1 class="game-title" data-en="🐾 Animal Chess">🐾 斗兽棋</h1>
+            <p class="lobby-sub" data-en="Choose game mode">选择游戏模式</p>
+            <div class="lobby-actions" style="flex-direction: column; align-items: center;">
+                <button style="min-width:200px; font-size:16px; padding:14px 30px;" onclick="startLocalGame()">
+                    <span data-en="👥 Local 2P">👥 本地双人</span>
+                </button>
+                <button style="min-width:200px; font-size:16px; padding:14px 30px;" onclick="startAIGame()">
+                    <span data-en="🤖 vs AI">🤖 本地 AI</span>
+                </button>
+                <button style="min-width:200px; font-size:16px; padding:14px 30px; background:linear-gradient(135deg,#00e5ff,#ff00ff); color:#000;" onclick="openOnlineLobby()">
+                    <span data-en="🌐 Online">🌐 联机对战</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 联机大厅 -->
+        <div id="lobbyScreen" class="lobby-card hidden">
+            <h1 class="game-title" data-en="🌐 Online Lobby">🌐 联机大厅</h1>
+            <p class="lobby-sub" data-en="Select a room or create a new one">选择房间或创建新房间</p>
+            <div class="lobby-actions">
+                <button class="create-btn" onclick="onlineJoin()" data-en="🚀 Quick Join / Create Room">🚀 快速加入 / 创建房间</button>
+                <button class="refresh-btn" onclick="loadRoomList()" data-en="🔄 Refresh List">🔄 刷新列表</button>
+                <button class="btn-gray" onclick="backToMenu()" data-en="← Back">← 返回</button>
+            </div>
+            <div id="room-list" class="room-list">
+                <div class="room-empty" data-en="Loading...">加载中...</div>
+            </div>
+        </div>
+
+        <!-- 等待界面 -->
+        <div id="waitingScreen" class="waiting-card hidden">
+            <h1 class="game-title" data-en="🃏 Waiting Room">🃏 等待房间</h1>
+            <p class="waiting-sub" id="waiting-sub" data-en="Matching players...">正在匹配玩家...</p>
+            <div id="seat-list" class="seat-list"></div>
+            <div class="lobby-actions">
+                <button id="add-ai-btn" class="btn-gray hidden" onclick="onlineAddAI()" data-en="🤖 Add AI to Start">🤖 添加 AI 开始游戏</button>
+                <button id="disband-btn" class="btn-danger hidden" onclick="onlineLeave()" data-en="🗑 Disband Room">🗑 解散房间</button>
+                <button id="leave-btn" class="btn-gray hidden" onclick="onlineLeave()" data-en="← Leave Room">← 离开房间</button>
+            </div>
+            <p class="waiting-tip" data-en="Game starts when 2 players join, or add AI to start">房间满2人自动开始，或点击添加 AI 开始</p>
+        </div>
+
+        <!-- 游戏界面 -->
+        <div id="gameScreen" class="hidden">
+            <div class="game-header">
+                <div class="side" id="redSide"></div>
+                <div id="turnIndicator" class="turn-indicator turn-red" data-en="Red's Turn">红方回合</div>
+                <div class="side" id="blueSide"></div>
+            </div>
+            <div id="board"></div>
+            <div class="status" id="status">点击棋子选中，再点击目标格移动</div>
+            <div>
+                <button onclick="restartGame()" data-en="New Game">新游戏</button>
+                <button id="exitGameBtn" onclick="exitGame()" style="background: #666;" class="hidden" data-en="← Exit">← 退出</button>
+            </div>
+            <div class="info" data-en="Rat swims · Lion & Tiger jump rivers · Traps work once · Trapped pieces are stuck">鼠下河 · 狮虎跳河 · 陷阱一次使用 · 进入陷阱会被陷住</div>
+        </div>
+    </div>
+
+    <!-- 登录提示弹窗 -->
+    <div id="loginOverlay" class="login-overlay hidden">
+        <div class="login-box">
+            <div class="login-icon">🔒</div>
+            <h1 data-en="Login Required">需要登录</h1>
+            <p data-en="You need to login with Slexion Account to play online">联机对战需要登录 Slexion Account 才能游玩</p>
+            <div class="login-buttons">
+                <button class="login-btn login-btn-home" onclick="hideLoginOverlay(); backToMenu();" data-en="Back to Home">返回主页</button>
+                <button class="login-btn login-btn-go" onclick="hideLoginOverlay(); openLogin();" data-en="Login">去登录</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 房间已解散弹窗 -->
+    <div id="disbandedOverlay" class="login-overlay hidden">
+        <div class="login-box">
+            <div class="login-icon">🚪</div>
+            <h1 data-en="Room Disbanded">房间已解散</h1>
+            <p data-en="Host left or not enough players">房主已退出房间或人数不足</p>
+            <div class="login-buttons">
+                <button class="login-btn login-btn-home" onclick="document.getElementById('disbandedOverlay').classList.add('hidden'); backToMenu();" data-en="Back to Lobby">返回大厅</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/navbar.js"></script>
+    <script src="/account/auth.js"></script>
+    <script src="/i18n.js"></script>
+    <script src="/account.js"></script>
+    <script>
+        // ========== SVG 棋子图标 ==========
+        const SVG_ICONS = {
+            RAT: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><ellipse cx="32" cy="40" rx="16" ry="14" fill="currentColor"/><circle cx="22" cy="24" r="8" fill="currentColor"/><circle cx="42" cy="24" r="8" fill="currentColor"/><circle cx="22" cy="24" r="4" fill="#ffb6c1"/><circle cx="42" cy="24" r="4" fill="#ffb6c1"/><ellipse cx="32" cy="36" rx="10" ry="8" fill="#ffb6c1"/><circle cx="28" cy="34" r="1.5" fill="#000"/><circle cx="36" cy="34" r="1.5" fill="#000"/><ellipse cx="32" cy="39" rx="2" ry="1.5" fill="#ff69b4"/><path d="M48 44 Q58 42 56 52" stroke="currentColor" stroke-width="2" fill="none"/></svg>`,
+            CAT: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M16 28 L12 12 L26 22 Z" fill="currentColor"/><path d="M48 28 L52 12 L38 22 Z" fill="currentColor"/><path d="M16 28 L14 16 L24 22 Z" fill="#ffb6c1"/><path d="M48 28 L50 16 L40 22 Z" fill="#ffb6c1"/><ellipse cx="32" cy="38" rx="18" ry="16" fill="currentColor"/><ellipse cx="32" cy="42" rx="12" ry="10" fill="#ffb6c1"/><circle cx="25" cy="36" r="2.5" fill="#000"/><circle cx="39" cy="36" r="2.5" fill="#000"/><circle cx="25.5" cy="35.5" r="0.8" fill="#fff"/><circle cx="39.5" cy="35.5" r="0.8" fill="#fff"/><path d="M30 41 L32 43 L34 41" stroke="#ff69b4" stroke-width="1.5" fill="none"/><line x1="18" y1="40" x2="8" y2="38" stroke="currentColor" stroke-width="1"/><line x1="18" y1="43" x2="8" y2="44" stroke="currentColor" stroke-width="1"/><line x1="46" y1="40" x2="56" y2="38" stroke="currentColor" stroke-width="1"/><line x1="46" y1="43" x2="56" y2="44" stroke="currentColor" stroke-width="1"/></svg>`,
+            DOG: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><ellipse cx="32" cy="38" rx="18" ry="16" fill="currentColor"/><path d="M14 28 Q8 20 14 14 Q20 18 22 28 Z" fill="currentColor"/><path d="M50 28 Q56 20 50 14 Q44 18 42 28 Z" fill="currentColor"/><ellipse cx="32" cy="44" rx="10" ry="8" fill="#deb887"/><circle cx="25" cy="36" r="2.5" fill="#000"/><circle cx="39" cy="36" r="2.5" fill="#000"/><circle cx="25.5" cy="35.5" r="0.8" fill="#fff"/><circle cx="39.5" cy="35.5" r="0.8" fill="#fff"/><ellipse cx="32" cy="42" rx="3" ry="2" fill="#000"/><path d="M29 46 Q32 50 35 46" stroke="#000" stroke-width="1.5" fill="none"/><path d="M28 48 Q32 54 36 48" fill="#ff6b6b"/></svg>`,
+            WOLF: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M14 30 L10 14 L24 24 Z" fill="currentColor"/><path d="M50 30 L54 14 L40 24 Z" fill="currentColor"/><ellipse cx="32" cy="40" rx="18" ry="16" fill="currentColor"/><path d="M22 32 L32 28 L42 32 L40 38 L24 38 Z" fill="#666"/><circle cx="25" cy="36" r="2" fill="#ff0"/><circle cx="39" cy="36" r="2" fill="#ff0"/><path d="M28 44 L32 48 L36 44" stroke="#000" stroke-width="1.5" fill="none"/><path d="M26 46 L28 50 L30 46" fill="#fff"/><path d="M34 46 L36 50 L38 46" fill="#fff"/><ellipse cx="32" cy="42" rx="2.5" ry="1.5" fill="#000"/></svg>`,
+            PANTHER: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><ellipse cx="32" cy="38" rx="18" ry="16" fill="currentColor"/><path d="M14 28 Q10 18 16 14 Q22 18 22 28 Z" fill="currentColor"/><path d="M50 28 Q54 18 48 14 Q42 18 42 28 Z" fill="currentColor"/><circle cx="20" cy="30" r="2" fill="#ffd700"/><circle cx="28" cy="26" r="1.5" fill="#ffd700"/><circle cx="38" cy="28" r="2" fill="#ffd700"/><circle cx="44" cy="32" r="1.5" fill="#ffd700"/><circle cx="24" cy="42" r="1.5" fill="#ffd700"/><circle cx="40" cy="44" r="2" fill="#ffd700"/><circle cx="25" cy="36" r="2.5" fill="#0f0"/><circle cx="39" cy="36" r="2.5" fill="#0f0"/><ellipse cx="32" cy="42" rx="2.5" ry="1.5" fill="#000"/><path d="M28 46 Q32 50 36 46" stroke="#000" stroke-width="1.5" fill="none"/></svg>`,
+            TIGER: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><ellipse cx="32" cy="38" rx="18" ry="16" fill="#ff8c00"/><path d="M14 28 Q10 18 16 14 Q22 18 22 28 Z" fill="#ff8c00"/><path d="M50 28 Q54 18 48 14 Q42 18 42 28 Z" fill="#ff8c00"/><path d="M20 22 L24 28 M26 18 L28 26 M36 18 L34 26 M42 22 L38 28" stroke="#000" stroke-width="2"/><path d="M16 36 L22 38 M16 42 L22 42 M48 36 L42 38 M48 42 L42 42" stroke="#000" stroke-width="2"/><ellipse cx="32" cy="44" rx="10" ry="8" fill="#fff"/><circle cx="25" cy="36" r="2.5" fill="#000"/><circle cx="39" cy="36" r="2.5" fill="#000"/><ellipse cx="32" cy="42" rx="2.5" ry="1.5" fill="#000"/><path d="M28 46 Q32 50 36 46" stroke="#000" stroke-width="1.5" fill="none"/><path d="M28 30 L30 34 M34 30 L32 34" stroke="#000" stroke-width="1.5"/></svg>`,
+            LION: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="36" r="22" fill="#8B4513"/><circle cx="32" cy="36" r="16" fill="#daa520"/><path d="M12 24 L8 18 L16 22 Z" fill="#8B4513"/><path d="M52 24 L56 18 L48 22 Z" fill="#8B4513"/><path d="M10 36 L4 34 L10 40 Z" fill="#8B4513"/><path d="M54 36 L60 34 L54 40 Z" fill="#8B4513"/><path d="M14 50 L10 56 L18 52 Z" fill="#8B4513"/><path d="M50 50 L54 56 L46 52 Z" fill="#8B4513"/><ellipse cx="32" cy="42" rx="9" ry="7" fill="#deb887"/><circle cx="25" cy="34" r="2.5" fill="#000"/><circle cx="39" cy="34" r="2.5" fill="#000"/><circle cx="25.5" cy="33.5" r="0.8" fill="#fff"/><circle cx="39.5" cy="33.5" r="0.8" fill="#fff"/><ellipse cx="32" cy="40" rx="2.5" ry="1.5" fill="#000"/><path d="M28 44 Q32 48 36 44" stroke="#000" stroke-width="1.5" fill="none"/><path d="M26 28 L28 32 M36 28 L34 32" stroke="#fff" stroke-width="1"/></svg>`,
+            ELEPHANT: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><ellipse cx="32" cy="36" rx="20" ry="16" fill="currentColor"/><ellipse cx="14" cy="32" rx="8" ry="12" fill="currentColor"/><ellipse cx="50" cy="32" rx="8" ry="12" fill="currentColor"/><ellipse cx="14" cy="32" rx="5" ry="8" fill="#ffb6c1"/><ellipse cx="50" cy="32" rx="5" ry="8" fill="#ffb6c1"/><path d="M28 42 Q26 52 30 56 Q34 58 36 54 Q34 50 34 46" fill="currentColor" stroke="currentColor" stroke-width="1"/><circle cx="25" cy="30" r="2.5" fill="#000"/><circle cx="39" cy="30" r="2.5" fill="#000"/><circle cx="25.5" cy="29.5" r="0.8" fill="#fff"/><circle cx="39.5" cy="29.5" r="0.8" fill="#fff"/><ellipse cx="31" cy="54" rx="2" ry="1" fill="#ffb6c1"/><path d="M20 50 L18 56 M26 52 L25 58 M38 52 L39 58 M44 50 L46 56" stroke="currentColor" stroke-width="3"/></svg>`
+        };
+
+        // ========== 常量 ==========
+        const ROWS = 9;
+        const COLS = 7;
+        const API_URL = '/littlegames/beastplay_room.php';
+        const SAVE_KEY = 'beastplay_save_v1';
+
+        // ========== 中英切换 ==========
+        const T = window.I18N ? I18N.t.bind(I18N) : (z) => z;
+        const statusEl = document.getElementById('status');
+        let lastStatus = { zh: '', en: '' };
+        function showStatus(zh, en) {
+            lastStatus.zh = zh;
+            lastStatus.en = en;
+            statusEl.textContent = T(zh, en);
+        }
+        function sideName(c) {
+            return T(c === 'red' ? '红方' : '蓝方', c === 'red' ? 'Red' : 'Blue');
+        }
+        function pieceName(info) { return T(info.name, info.en); }
+        const PIECES = {
+            RAT: { name: '鼠', en: 'Rat', rank: 1, canSwim: true },
+            CAT: { name: '猫', en: 'Cat', rank: 2, canSwim: false },
+            DOG: { name: '狗', en: 'Dog', rank: 3, canSwim: false },
+            WOLF: { name: '狼', en: 'Wolf', rank: 4, canSwim: false },
+            PANTHER: { name: '豹', en: 'Leopard', rank: 5, canSwim: false },
+            TIGER: { name: '虎', en: 'Tiger', rank: 6, canSwim: false, canJump: true },
+            LION: { name: '狮', en: 'Lion', rank: 7, canSwim: false, canJump: true },
+            ELEPHANT: { name: '象', en: 'Elephant', rank: 8, canSwim: false }
+        };
+        const NAME_MAP = { '狮':'LION','虎':'TIGER','象':'ELEPHANT','狼':'WOLF','豹':'PANTHER','狗':'DOG','猫':'CAT','鼠':'RAT' };
+        const LAYOUT = [
+            ["狮","地","陷","兽","陷","地","虎"],
+            ["地","狗","地","陷","地","猫","地"],
+            ["鼠","地","豹","地","狼","地","象"],
+            ["地","河","河","地","河","河","地"],
+            ["地","河","河","地","河","河","地"],
+            ["地","河","河","地","河","河","地"],
+            ["象","地","狼","地","豹","地","鼠"],
+            ["地","猫","地","陷","地","狗","地"],
+            ["虎","地","陷","兽","陷","地","狮"]
+        ];
+
+        // ========== 状态 ==========
+        let board = [];
+        let trapState = {};
+        let trappedPieces = new Set();
+        let selected = null;
+        let turn = 'red';
+        let gameOver = false;
+        let validMoves = [];
+        let gameMode = 'local'; // 'local' | 'ai' | 'online'
+        let currentPlayer = null; // 'red' or 'blue' in online
+        let currentRoomId = null;
+        let isRoomOwner = false;
+        let pollInterval = null;
+        let aiThinking = false;
+
+        // ========== 界面切换 ==========
+        function showScreen(id) {
+            ['menuScreen','lobbyScreen','waitingScreen','gameScreen'].forEach(function(s) {
+                document.getElementById(s).classList.add('hidden');
+            });
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function backToMenu() {
+            stopPolling();
+            gameMode = 'local';
+            currentPlayer = null;
+            currentRoomId = null;
+            isRoomOwner = false;
+            aiThinking = false;
+            document.getElementById('exitGameBtn').classList.add('hidden');
+            try { sessionStorage.removeItem('beastplay_loc'); } catch (e) {}
+            showScreen('menuScreen');
+        }
+
+        function hideLoginOverlay() { document.getElementById('loginOverlay').classList.add('hidden'); }
+        function openLogin() { if (window.SlexionAuth) SlexionAuth.open(); }
+
+        // ========== 登录检查 ==========
+        function checkLogin() {
+            if (window.SlexionAuth && SlexionAuth.isLoggedIn()) return true;
+            document.getElementById('loginOverlay').classList.remove('hidden');
+            return false;
+        }
+
+        // ========== 联机大厅 ==========
+        // 统一 API 请求（禁用缓存，避免旧响应导致的 JSON 解析错误）
+        function apiFetch(url, options) {
+            options = options || {};
+            options.cache = 'no-store';
+            return fetch(url, options);
+        }
+
+        function openOnlineLobby() {
+            if (!checkLogin()) return;
+            try { sessionStorage.setItem('beastplay_loc', 'lobby'); } catch (e) {}
+            showScreen('lobbyScreen');
+            loadRoomList();
+            // 若已在房间中则自动进入（支持刷新恢复）
+            checkExistingRoom();
+        }
+
+        async function checkExistingRoom() {
+            try {
+                const res = await apiFetch(API_URL + '?action=my_room');
+                const data = await res.json();
+                if (data.success && data.room) {
+                    enterRoom(data.room);
+                }
+            } catch (e) {}
+        }
+
+        async function loadRoomList() {
+            const listEl = document.getElementById('room-list');
+            listEl.innerHTML = '<div class="room-empty">' + T('加载中...', 'Loading...') + '</div>';
+            try {
+                const res = await apiFetch(API_URL + '?action=list');
+                const data = await res.json();
+                if (!data.success) {
+                    if (data.error === '请先登录') {
+                        document.getElementById('loginOverlay').classList.remove('hidden');
+                        return;
+                    }
+                    listEl.innerHTML = '<div class="room-empty">' + (data.error || '加载失败') + '</div>';
+                    return;
+                }
+                renderRoomList(data.rooms);
+            } catch (e) {
+                listEl.innerHTML = '<div class="room-empty">' + T('网络错误', 'Network error') + '</div>';
+            }
+        }
+
+        function renderRoomList(rooms) {
+            const listEl = document.getElementById('room-list');
+            if (!rooms || rooms.length === 0) {
+                listEl.innerHTML = '<div class="room-empty" data-en="No rooms yet, click Quick Join to create one">' + T('暂无房间，点击快速加入创建', 'No rooms yet, click Quick Join to create one') + '</div>';
+                return;
+            }
+            listEl.innerHTML = '';
+            rooms.forEach(function(r) {
+                const item = document.createElement('div');
+                item.className = 'room-item';
+                const statusCls = r.status === 'playing' ? 'playing' : (r.player_count >= 2 ? 'full' : 'waiting');
+                const statusTxt = r.status === 'playing' ? T('游戏中','Playing') : (r.player_count >= 2 ? T('已满','Full') : T('等待中','Waiting'));
+                const names = r.players.map(function(p) { return p.username; }).join(', ') || '...';
+                item.innerHTML = '<span class="room-id">' + r.room_id + '</span>' +
+                    '<span class="room-players">' + T('玩家','Players') + ': ' + names + ' (' + r.player_count + '/2)</span>' +
+                    '<span class="room-status ' + statusCls + '">' + statusTxt + '</span>' +
+                    '<button class="room-join-btn" ' + (r.player_count >= 2 ? 'disabled' : '') + '>' + T('加入','Join') + '</button>';
+                item.querySelector('button').addEventListener('click', function() {
+                    onlineJoinRoom(r.room_id);
+                });
+                listEl.appendChild(item);
+            });
+        }
+
+        async function onlineJoin() {
+            if (!checkLogin()) return;
+            try {
+                const res = await apiFetch(API_URL + '?action=join', { method: 'POST' });
+                const data = await res.json();
+                if (!data.success) {
+                    if (data.error === '请先登录') { document.getElementById('loginOverlay').classList.remove('hidden'); return; }
+                    alert(data.error || '加入失败');
+                    return;
+                }
+                enterRoom(data.room);
+            } catch (e) {
+                alert('网络错误: ' + e.message);
+            }
+        }
+
+        async function onlineJoinRoom(roomId) {
+            if (!checkLogin()) return;
+            try {
+                const res = await apiFetch(API_URL + '?action=join', { method: 'POST' });
+                const data = await res.json();
+                if (!data.success) { alert(data.error || '加入失败'); return; }
+                enterRoom(data.room);
+            } catch (e) {
+                alert('网络错误: ' + e.message);
+            }
+        }
+
+        async function onlineAddAI() {
+            if (!currentRoomId) return;
+            try {
+                const res = await apiFetch(API_URL + '?action=add_ai', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'room_id=' + currentRoomId
+                });
+                const data = await res.json();
+                if (data.success) {
+                    enterRoom(data.room);
+                } else {
+                    alert(data.error || '添加AI失败');
+                }
+            } catch (e) {
+                alert('网络错误: ' + e.message);
+            }
+        }
+
+        async function onlineLeave() {
+            if (!currentRoomId) return;
+            try {
+                await apiFetch(API_URL + '?action=leave', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'room_id=' + currentRoomId
+                });
+            } catch (e) {}
+            stopPolling();
+            currentRoomId = null;
+            isRoomOwner = false;
+            currentPlayer = null;
+            gameMode = 'local';
+            aiThinking = false;
+            document.getElementById('exitGameBtn').classList.add('hidden');
+            showScreen('menuScreen');
+            openOnlineLobby();
+        }
+
+        function enterRoom(room) {
+            if (!room) return;
+            currentRoomId = room.room_id;
+            isRoomOwner = false;
+            // 确定我的颜色和房主身份
+            const user = (window.SlexionAuth && SlexionAuth.getUser()) || {};
+            room.players.forEach(function(p) {
+                if (!p.is_ai && String(p.user_id) === String(user.id)) {
+                    currentPlayer = p.color;
+                }
+            });
+            isRoomOwner = (String(room.owner_user_id) === String(user.id));
+
+            if (room.status === 'playing' && room.gameState) {
+                // 游戏进行中，直接进入
+                gameMode = 'online';
+                startOnlineGame(room);
+                return;
+            }
+            // 等待界面
+            showScreen('waitingScreen');
+            renderWaitingRoom(room);
+            startPolling();
+        }
+
+        function renderWaitingRoom(room) {
+            const listEl = document.getElementById('seat-list');
+            listEl.innerHTML = '';
+            const seats = [
+                { color: 'red', icon: '🔴' },
+                { color: 'blue', icon: '🔵' }
+            ];
+            const playersByColor = {};
+            (room.players || []).forEach(function(p) { playersByColor[p.color] = p; });
+
+            seats.forEach(function(s) {
+                const seat = document.createElement('div');
+                const p = playersByColor[s.color];
+                if (p) {
+                    seat.className = 'seat';
+                    const isAI = p.is_ai;
+                    const isMe = !isAI && (window.SlexionAuth && SlexionAuth.getUser()) && String(p.user_id) === String(SlexionAuth.getUser().id);
+                    seat.innerHTML = '<span class="seat-icon">' + s.icon + '</span>' +
+                        '<span class="seat-name">' + (isAI ? '🤖 ' : '') + p.username + '</span>' +
+                        (isMe ? '<span class="seat-tag">' + T('我','You') + '</span>' : '');
+                } else {
+                    seat.className = 'seat empty';
+                    seat.innerHTML = '<span class="seat-icon">' + s.icon + '</span>' +
+                        '<span>' + T('等待加入...','Waiting for player...') + '</span>';
+                }
+                listEl.appendChild(seat);
+            });
+
+            // 按钮显示
+            document.getElementById('add-ai-btn').classList.toggle('hidden', !isRoomOwner || room.players.length >= 2);
+            document.getElementById('disband-btn').classList.toggle('hidden', !isRoomOwner);
+            document.getElementById('leave-btn').classList.toggle('hidden', isRoomOwner);
+            document.getElementById('waiting-sub').textContent = room.players.length >= 2
+                ? T('游戏即将开始...', 'Game starting...')
+                : T('正在匹配玩家...', 'Matching players...');
+        }
+
+        // ========== 轮询 ==========
+        function startPolling() {
+            stopPolling();
+            pollInterval = setInterval(pollRoom, 1200);
+        }
+        function stopPolling() {
+            if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
+        }
+
+        async function pollRoom() {
+            if (!currentRoomId) return;
+            try {
+                const res = await apiFetch(API_URL + '?action=status&room_id=' + currentRoomId);
+                const data = await res.json();
+                if (!data.success) {
+                    if (data.error === '房间不存在') {
+                        showDisbanded();
+                    }
+                    return;
+                }
+                const room = data.room;
+                if (room.status === 'finished') {
+                    showDisbanded();
+                    return;
+                }
+                if (document.getElementById('waitingScreen').classList.contains('hidden') === false) {
+                    renderWaitingRoom(room);
+                    if (room.status === 'playing') {
+                        gameMode = 'online';
+                        startOnlineGame(room);
+                    }
+                    return;
+                }
+                // 游戏中：同步状态
+                if (gameMode === 'online' && room.gameState) {
+                    updateOnlineGame(room);
+                }
+            } catch (e) {}
+        }
+
+        function showDisbanded() {
+            stopPolling();
+            document.getElementById('disbandedOverlay').classList.remove('hidden');
+        }
+
+        function startOnlineGame(room) {
+            stopPolling();
+            gameMode = 'online';
+            showScreen('gameScreen');
+            document.getElementById('exitGameBtn').classList.remove('hidden');
+            document.getElementById('exitGameBtn').textContent = T('← 离开房间', '← Leave Room');
+            document.getElementById('exitGameBtn').onclick = function() { onlineLeave(); };
+            // 应用服务器状态
+            if (room.gameState) {
+                applyGameState(room.gameState);
+            } else {
+                initGame();
+            }
+            startPolling();
+        }
+
+        function updateOnlineGame(room) {
+            if (!room.gameState) return;
+            const state = room.gameState;
+            // 只有在轮到自己或首次加载时应用（避免覆盖本地选中状态）
+            if (state.lastSync !== (window.__lastSync || 0)) {
+                window.__lastSync = state.lastSync;
+            }
+            // 对比：如果服务器状态不同则应用
+            if (JSON.stringify(state.board) !== JSON.stringify(board) || state.turn !== turn) {
+                applyGameState(state);
+            }
+            updateOnlineHeader(room);
+        }
+
+        function updateOnlineHeader(room) {
+            const user = (window.SlexionAuth && SlexionAuth.getUser()) || {};
+            const redP = (room.players || []).find(function(p) { return p.color === 'red'; });
+            const blueP = (room.players || []).find(function(p) { return p.color === 'blue'; });
+            const redIsMe = redP && !redP.is_ai && String(redP.user_id) === String(user.id);
+            const blueIsMe = blueP && !blueP.is_ai && String(blueP.user_id) === String(user.id);
+            document.getElementById('redSide').innerHTML =
+                '<span class="online-indicator ' + (redP ? 'online' : 'offline') + '"></span>' +
+                (redP ? (redP.is_ai ? '🤖 ' : '') + redP.username : T('等待中','Waiting')) +
+                (redIsMe ? ' (' + T('你','You') + ')' : '');
+            document.getElementById('blueSide').innerHTML =
+                '<span class="online-indicator ' + (blueP ? 'online' : 'offline') + '"></span>' +
+                (blueP ? (blueP.is_ai ? '🤖 ' : '') + blueP.username : T('等待中','Waiting')) +
+                (blueIsMe ? ' (' + T('你','You') + ')' : '');
+        }
+
+        // ========== 本地模式 ==========
+        function startLocalGame() {
+            gameMode = 'local';
+            currentPlayer = null;
+            aiThinking = false;
+            document.getElementById('exitGameBtn').classList.remove('hidden');
+            document.getElementById('exitGameBtn').textContent = T('← 退出', '← Exit');
+            document.getElementById('exitGameBtn').onclick = function() { backToMenu(); };
+            showScreen('gameScreen');
+            tryRestoreSave();
+        }
+
+        function startAIGame() {
+            gameMode = 'ai';
+            currentPlayer = null;
+            aiThinking = false;
+            document.getElementById('exitGameBtn').classList.remove('hidden');
+            document.getElementById('exitGameBtn').textContent = T('← 退出', '← Exit');
+            document.getElementById('exitGameBtn').onclick = function() { backToMenu(); };
+            showScreen('gameScreen');
+            tryRestoreSave();
+        }
+
+        function exitGame() { backToMenu(); }
+
+        // ========== 存档（刷新不重置） ==========
+        function saveGame() {
+            if (gameMode !== 'local' && gameMode !== 'ai') return;
+            try {
+                const save = {
+                    version: 1,
+                    gameMode: gameMode,
+                    board: board,
+                    trapState: trapState,
+                    trappedPieces: Array.from(trappedPieces),
+                    turn: turn,
+                    gameOver: gameOver,
+                    savedAt: Date.now()
+                };
+                localStorage.setItem(SAVE_KEY, JSON.stringify(save));
+            } catch (e) {}
+        }
+
+        function clearSave() {
+            try { localStorage.removeItem(SAVE_KEY); } catch (e) {}
+        }
+
+        function tryRestoreSave() {
+            try {
+                const raw = localStorage.getItem(SAVE_KEY);
+                if (!raw) { initGame(); return; }
+                const save = JSON.parse(raw);
+                if (!save || save.gameMode !== gameMode) { initGame(); return; }
+                board = save.board;
+                trapState = save.trapState;
+                trappedPieces = new Set(save.trappedPieces || []);
+                turn = save.turn;
+                gameOver = save.gameOver;
+                selected = null;
+                validMoves = [];
+                aiThinking = false;
+                render();
+                updateTurnIndicator();
+                showStatus('🔄 已恢复上次对局', '🔄 Restored previous game');
+                if (gameMode === 'ai' && !gameOver && turn === 'blue') {
+                    setTimeout(aiMove, 800);
+                }
+            } catch (e) {
+                initGame();
+            }
+        }
+
+        // ========== 初始化 ==========
+        function initTrapState() {
+            trapState = {};
+            [[0,2],[0,4],[1,3],[8,2],[8,4],[7,3]].forEach(function(pos) {
+                trapState[pos[0] + ',' + pos[1]] = true;
+            });
+            trappedPieces.clear();
+        }
+
+        function initBoard() {
+            board = [];
+            for (let r = 0; r < ROWS; r++) {
+                board[r] = [];
+                for (let c = 0; c < COLS; c++) board[r][c] = null;
+            }
+            for (let r = 0; r < LAYOUT.length; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    const val = LAYOUT[r][c];
+                    if (val === '地' || val === '河' || val === '陷' || val === '兽') continue;
+                    const typeKey = NAME_MAP[val];
+                    if (!typeKey) continue;
+                    board[r][c] = { type: typeKey, color: (r <= 2) ? 'blue' : 'red' };
+                }
+            }
+        }
+
+        // ========== 格子类型 ==========
+        function getCellType(r, c) {
+            if (r < 0 || r >= ROWS || c < 0 || c >= COLS) return 'none';
+            const key = r + ',' + c;
+            if (trapState[key] === true) {
+                if ((r === 0 && (c === 2 || c === 4)) || (r === 1 && c === 3) ||
+                    (r === 8 && (c === 2 || c === 4)) || (r === 7 && c === 3)) return 'trap';
+            }
+            if (trapState[key] === false) return 'land';
+            if ((r === 0 || r === 8) && c === 3) return 'den';
+            if (r >= 3 && r <= 5) {
+                if (c === 0 || c === 3 || c === 6) return 'land';
+                return 'river';
+            }
+            return 'land';
+        }
+
+        function isOwnDen(row, col, color) {
+            if (color === 'red' && row === 8 && col === 3) return true;
+            if (color === 'blue' && row === 0 && col === 3) return true;
+            return false;
+        }
+
+        // ========== 走法 ==========
+        function getValidMoves(row, col) {
+            const piece = board[row][col];
+            if (!piece) return [];
+            if (trappedPieces.has(row + ',' + col)) return [];
+            const moves = [];
+            const dirs = [[-1,0],[1,0],[0,-1],[0,1]];
+            const info = PIECES[piece.type];
+            for (const [dr, dc] of dirs) {
+                const nr = row + dr, nc = col + dc;
+                if (nr < 0 || nr >= ROWS || nc < 0 || nc >= COLS) continue;
+                const targetType = getCellType(nr, nc);
+                if (targetType === 'river') {
+                    if (!info.canSwim) {
+                        if (info.canJump) {
+                            let jr = row + dr, jc = col + dc;
+                            let jumped = false;
+                            while (jr >= 0 && jr < ROWS && jc >= 0 && jc < COLS) {
+                                const curType = getCellType(jr, jc);
+                                // 跳河落点可以是陆地或陷阱（兽穴除外）
+                                if (curType !== 'river') {
+                                    if (jumped && (curType === 'land' || curType === 'trap')) {
+                                        const target = board[jr][jc];
+                                        // 被陷住的子失去战斗力，任何子（包括同色）都可跳进吃掉
+                                        var targetTrapped = target && trappedPieces.has(jr + ',' + jc);
+                                        if (!target || targetTrapped || (target.color !== piece.color && canEat(piece, target))) {
+                                            moves.push({ row: jr, col: jc, isJump: true });
+                                        }
+                                    }
+                                    break;
+                                }
+                                // 河流中有子（如老鼠）则不能跳过
+                                if (board[jr][jc] !== null) break;
+                                jumped = true; jr += dr; jc += dc;
+                            }
+                        }
+                        continue;
+                    }
+                }
+                const target = board[nr][nc];
+                if (target) {
+                    // 被陷住的子失去战斗力，任何子（包括同色）都可走进吃掉
+                    var targetTrapped = trappedPieces.has(nr + ',' + nc);
+                    if (targetTrapped || (target.color !== piece.color && canEat(piece, target))) {
+                        moves.push({ row: nr, col: nc });
+                    }
+                } else {
+                    if (targetType === 'den' && isOwnDen(nr, nc, piece.color)) continue;
+                    moves.push({ row: nr, col: nc });
+                }
+            }
+            return moves;
+        }
+
+        function canEat(attacker, defender) {
+            if (trappedPieces.has(defender.row + ',' + defender.col)) return true;
+            if (attacker.type === 'RAT' && defender.type === 'ELEPHANT') return true;
+            if (attacker.type === 'ELEPHANT' && defender.type === 'RAT') return false;
+            return PIECES[attacker.type].rank >= PIECES[defender.type].rank;
+        }
+
+        function checkWin(row, col, color) {
+            const opp = color === 'red' ? 'blue' : 'red';
+            if (getCellType(row, col) === 'den') {
+                if ((row === 0 && opp === 'blue') || (row === 8 && opp === 'red')) return true;
+            }
+            return false;
+        }
+
+        // ========== 交互 ==========
+        function handleClick(row, col) {
+            if (gameOver) return;
+            if (gameMode === 'ai' && (aiThinking || turn === 'blue')) {
+                showStatus('🤖 AI 正在思考...', '🤖 AI is thinking...');
+                return;
+            }
+            if (gameMode === 'online' && currentPlayer !== turn) {
+                showStatus('等待对手走棋...', 'Waiting for opponent...');
+                return;
+            }
+            const piece = board[row][col];
+            if (selected) {
+                if (selected.row === row && selected.col === col) {
+                    selected = null; validMoves = []; render();
+                    showStatus('取消选中', 'Deselected');
+                    return;
+                }
+                movePiece(row, col);
+                return;
+            }
+            if (piece && piece.color === turn) {
+                selected = { row, col };
+                validMoves = getValidMoves(row, col);
+                render();
+                showStatus('选中了 ' + sideName(piece.color) + ' ' + pieceName(PIECES[piece.type]) + '，' + validMoves.length + ' 个走法',
+                           'Selected ' + piece.color + ' ' + PIECES[piece.type].en + ', ' + validMoves.length + ' moves');
+            } else {
+                showStatus('请选择己方棋子', 'Please select your own piece');
+            }
+        }
+
+        // ========== 执行移动 ==========
+        function movePiece(row, col) {
+            if (!selected) return;
+            const fromRow = selected.row, fromCol = selected.col;
+            const piece = board[fromRow][fromCol];
+            if (!piece) return;
+            const isValid = validMoves.some(function(m) { return m.row === row && m.col === col; });
+            if (!isValid) {
+                showStatus('❌ 不能走到这里', '❌ Cannot move here');
+                selected = null; validMoves = []; render();
+                return;
+            }
+            doMove(fromRow, fromCol, row, col, piece);
+            if (gameOver) return;
+            if (gameMode === 'ai' && turn === 'blue') aiMove();
+        }
+
+        // 执行移动并处理回合切换
+        function doMove(fromRow, fromCol, row, col, piece) {
+            const target = board[row][col];
+            if (target) trappedPieces.delete(row + ',' + col);
+            board[row][col] = piece;
+            board[fromRow][fromCol] = null;
+            selected = null;
+            validMoves = [];
+
+            let msgZh = '✅ 移动成功，轮到 ' + sideName(turn === 'red' ? 'blue' : 'red');
+            let msgEn = '✅ Moved, ' + (turn === 'red' ? "Blue" : "Red") + "'s turn";
+            if (target) {
+                if (target.color === piece.color) {
+                    msgZh = '🔄 替换了被陷住的' + pieceName(PIECES[target.type]) + '！';
+                    msgEn = '🔄 Replaced trapped ' + PIECES[target.type].en + '!';
+                } else {
+                    msgZh = '💥 吃掉了对方的' + pieceName(PIECES[target.type]) + '！';
+                    msgEn = '💥 Ate the ' + PIECES[target.type].en + '!';
+                }
+            }
+            if (getCellType(row, col) === 'trap') {
+                const trapColor = (row === 0 || row === 1) ? 'blue' : 'red';
+                if (piece.color !== trapColor) {
+                    trapState[row + ',' + col] = false;
+                    trappedPieces.add(row + ',' + col);
+                    msgZh = '💥 陷阱被踩！棋子被陷住！';
+                    msgEn = '💥 Trap triggered! Piece trapped!';
+                }
+            }
+            if (checkWin(row, col, piece.color)) {
+                gameOver = true;
+                render(); updateTurnIndicator();
+                showStatus('🎉 ' + sideName(piece.color) + ' 获胜！进入兽穴！', '🎉 ' + piece.color + ' wins! Entered the den!');
+                if (gameMode === 'local' || gameMode === 'ai') clearSave();
+                if (gameMode === 'online') syncOnlineState();
+                return;
+            }
+            turn = (turn === 'red' ? 'blue' : 'red');
+            render(); updateTurnIndicator();
+            showStatus(msgZh, msgEn);
+            if (gameMode === 'local' || gameMode === 'ai') saveGame();
+            if (gameMode === 'online') syncOnlineState();
+        }
+
+        // ========== 联机状态同步 ==========
+        function getOnlineState() {
+            return {
+                board: board,
+                trapState: trapState,
+                trappedPieces: Array.from(trappedPieces),
+                turn: turn,
+                gameOver: gameOver,
+                winner: null,
+                lastSync: Date.now()
+            };
+        }
+
+        async function syncOnlineState() {
+            if (gameMode !== 'online' || !currentRoomId) return;
+            try {
+                await apiFetch(API_URL + '?action=update_state', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'room_id=' + currentRoomId + '&color=' + currentPlayer + '&gameState=' + encodeURIComponent(JSON.stringify(getOnlineState()))
+                });
+            } catch (e) {}
+        }
+
+        function applyGameState(state) {
+            board = state.board;
+            trapState = state.trapState;
+            trappedPieces = new Set(state.trappedPieces || []);
+            turn = state.turn;
+            gameOver = state.gameOver;
+            selected = null;
+            validMoves = [];
+            aiThinking = false;
+            render();
+            updateTurnIndicator();
+            if (gameOver) showStatus('游戏结束', 'Game Over');
+        }
+
+        // ========== AI 逻辑（升级版：深度2前瞻） ==========
+        function aiMove() {
+            if (gameOver || aiThinking) return;
+            aiThinking = true;
+            showStatus('🤖 AI 正在思考...', '🤖 AI is thinking...');
+            setTimeout(function() {
+                const move = aiChooseMove('blue');
+                aiThinking = false;
+                if (move) {
+                    // 模拟选中移动
+                    selected = { row: move.fromRow, col: move.fromCol };
+                    validMoves = getValidMoves(move.fromRow, move.fromCol);
+                    doMove(move.fromRow, move.fromCol, move.row, move.col, move.piece);
+                    if (gameOver) return;
+                    // doMove 已切换回合，若 AI 模式轮到 AI 会再次触发
+                    if (gameMode === 'ai' && turn === 'blue' && !gameOver) aiMove();
+                } else {
+                    gameOver = true;
+                    render(); updateTurnIndicator();
+                    showStatus('🎉 恭喜！AI 无棋可走，你获胜了！', '🎉 Congratulations! AI has no moves, you win!');
+                    clearSave();
+                }
+            }, 400 + Math.random() * 600);
+        }
+
+        // 获取某颜色的所有候选走法
+        function getCandidateMoves(color) {
+            const candidates = [];
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    const piece = board[r][c];
+                    if (!piece || piece.color !== color) continue;
+                    if (trappedPieces.has(r + ',' + c)) continue;
+                    const moves = getValidMoves(r, c);
+                    moves.forEach(function(m) {
+                        candidates.push({ fromRow: r, fromCol: c, row: m.row, col: m.col, piece: piece });
+                    });
+                }
+            }
+            return candidates;
+        }
+
+        // AI 选棋：深度2 前瞻
+        function aiChooseMove(color) {
+            const candidates = getCandidateMoves(color);
+            if (candidates.length === 0) return null;
+
+            const scored = candidates.map(function(mv) {
+                const score = aiScoreMove(mv.fromRow, mv.fromCol, mv.row, mv.col, mv.piece, color);
+                return { fromRow: mv.fromRow, fromCol: mv.fromCol, row: mv.row, col: mv.col, piece: mv.piece, score: score };
+            });
+
+            scored.sort(function(a, b) { return b.score - a.score; });
+
+            // 前8个最佳走法做深度2前瞻
+            const topMoves = scored.slice(0, 8);
+            let bestMove = null;
+            let bestScore = -Infinity;
+            topMoves.forEach(function(mv) {
+                const finalScore = mv.score + lookaheadScore(mv, color);
+                if (finalScore > bestScore) {
+                    bestScore = finalScore;
+                    bestMove = mv;
+                }
+            });
+            return bestMove;
+        }
+
+        // 前瞻：模拟走棋后评估对手的最佳回应
+        function lookaheadScore(mv, color) {
+            // 保存当前全局状态
+            const saveB = board, saveT = trapState, saveTP = trappedPieces;
+            // 深拷贝模拟状态
+            board = board.map(function(arr) { return arr.slice(); });
+            trapState = Object.assign({}, trapState);
+            trappedPieces = new Set(trappedPieces);
+
+            // 执行 AI 走法
+            const piece = board[mv.fromRow][mv.fromCol];
+            const target = board[mv.row][mv.col];
+            if (target) trappedPieces.delete(mv.row + ',' + mv.col);
+            board[mv.row][mv.col] = piece;
+            board[mv.fromRow][mv.fromCol] = null;
+            if (getCellType(mv.row, mv.col) === 'trap') {
+                const trapColor = (mv.row === 0 || mv.row === 1) ? 'blue' : 'red';
+                if (piece.color !== trapColor) {
+                    trapState[mv.row + ',' + mv.col] = false;
+                    trappedPieces.add(mv.row + ',' + mv.col);
+                }
+            }
+            // 检查 AI 是否获胜
+            let aiWin = false;
+            if (checkWin(mv.row, mv.col, color)) aiWin = true;
+
+            let oppBest = 0;
+            if (!aiWin) {
+                // 对手最佳回应
+                const oppMoves = getCandidateMoves(color === 'red' ? 'blue' : 'red');
+                oppMoves.forEach(function(om) {
+                    const s = aiScoreMove(om.fromRow, om.fromCol, om.row, om.col, om.piece, color === 'red' ? 'blue' : 'red');
+                    if (s > oppBest) oppBest = s;
+                });
+            }
+
+            // 恢复
+            board = saveB; trapState = saveT; trappedPieces = saveTP;
+            return (aiWin ? 1500 : 0) - oppBest * 0.55;
+        }
+
+        // 单步启发式评分
+        function aiScoreMove(fromRow, fromCol, row, col, piece, color) {
+            let score = 0;
+            const target = board[row][col];
+
+            if (target) score += PIECES[target.type].rank * 10;
+            const cellType = getCellType(row, col);
+            if (cellType === 'den') {
+                const opp = color === 'red' ? 'blue' : 'red';
+                if ((row === 0 && opp === 'blue') || (row === 8 && opp === 'red')) score += 1000;
+            }
+            if (cellType === 'trap') {
+                const trapColor = (row === 0 || row === 1) ? 'blue' : 'red';
+                if (piece.color !== trapColor) score -= 40;
+            }
+            // 风险：移动后会被吃
+            const simBoard = board.map(function(arr) { return arr.slice(); });
+            simBoard[row][col] = piece;
+            simBoard[fromRow][fromCol] = null;
+            const dirs = [[-1,0],[1,0],[0,-1],[0,1]];
+            dirs.forEach(function(d) {
+                const nr = row + d[0], nc = col + d[1];
+                if (nr < 0 || nr >= ROWS || nc < 0 || nc >= COLS) return;
+                const neighbor = simBoard[nr][nc];
+                if (!neighbor || neighbor.color === piece.color) return;
+                const myInfo = PIECES[piece.type];
+                const nbInfo = PIECES[neighbor.type];
+                if (neighbor.type === 'RAT' && piece.type === 'ELEPHANT') score -= 80;
+                else if (nbInfo.rank >= myInfo.rank && !(neighbor.type === 'ELEPHANT' && piece.type === 'RAT')) score -= myInfo.rank * 8;
+            });
+            // 进攻性：靠近对方兽穴
+            const denRow = color === 'red' ? 0 : 8;
+            const dist = Math.abs(row - denRow) + Math.abs(col - 3);
+            score += (14 - dist) * 0.8;
+            // 防守：高价值棋子留在己方区域更好？轻微惩罚
+            score += Math.random() * 2;
+            return score;
+        }
+
+        // ========== 渲染 ==========
+        function updateTurnIndicator() {
+            const el = document.getElementById('turnIndicator');
+            if (turn === 'red') {
+                el.className = 'turn-indicator turn-red';
+                el.textContent = T('红方回合', "Red's Turn");
+            } else {
+                el.className = 'turn-indicator turn-blue';
+                el.textContent = T('蓝方回合', "Blue's Turn");
+            }
+        }
+
+        function render() {
+            const boardEl = document.getElementById('board');
+            boardEl.innerHTML = '';
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    const cellType = getCellType(r, c);
+                    const key = r + ',' + c;
+                    const isTrapActive = trapState[key] === true;
+
+                    if (cellType === 'river') cell.classList.add('river');
+                    else if (cellType === 'trap' && isTrapActive) cell.classList.add('trap-active');
+                    else if (cellType === 'trap' && !isTrapActive) cell.classList.add('trap-inactive');
+                    else if (cellType === 'den') {
+                        if (r === 0) cell.classList.add('den-blue');
+                        else if (r === 8) cell.classList.add('den-red');
+                    }
+
+                    const piece = board[r][c];
+                    if (piece) {
+                        cell.innerHTML = SVG_ICONS[piece.type];
+                        const svg = cell.querySelector('svg');
+                        if (svg) svg.style.color = piece.color === 'red' ? '#e74c3c' : '#3498db';
+                        cell.classList.add(piece.color === 'red' ? 'piece-red' : 'piece-blue');
+                        if (trappedPieces.has(key)) cell.style.border = '3px solid #ff4444';
+                        if (selected && selected.row === r && selected.col === c) cell.classList.add('selected');
+                    } else {
+                        const isValid = validMoves.some(function(m) { return m.row === r && m.col === c; });
+                        if (isValid) cell.classList.add('valid-move');
+                    }
+
+                    cell.addEventListener('click', (function(row, col) {
+                        return function() { handleClick(row, col); };
+                    })(r, c));
+                    boardEl.appendChild(cell);
+                }
+            }
+        }
+
+        // ========== 新游戏 ==========
+        function initGame() {
+            initTrapState();
+            initBoard();
+            selected = null;
+            validMoves = [];
+            turn = 'red';
+            gameOver = false;
+            aiThinking = false;
+            render();
+            updateTurnIndicator();
+            if (gameMode === 'ai') {
+                showStatus('🐾 新游戏开始！你执红方先走', '🐾 New game! You play Red, move first');
+            } else {
+                showStatus('🐾 新游戏开始！红色方先走', '🐾 New game! Red moves first');
+            }
+            if (gameMode === 'local' || gameMode === 'ai') saveGame();
+        }
+
+        function restartGame() {
+            if (gameMode === 'online') return;
+            if (gameMode === 'local' || gameMode === 'ai') clearSave();
+            initGame();
+        }
+
+        // 语言切换刷新
+        window.addEventListener('i18nchange', function() {
+            showStatus(lastStatus.zh, lastStatus.en);
+            updateTurnIndicator();
+        });
+
+        // 页面关闭：本地存档自动保存（已在移动时保存）；联机标记离线（轮询会检测）
+        window.addEventListener('beforeunload', function() {
+            stopPolling();
+        });
+
+        // 刷新恢复：若上次在联机大厅，登录后自动回到大厅
+        (function autoResumeLobby() {
+            var loc = '';
+            try { loc = sessionStorage.getItem('beastplay_loc') || ''; } catch (e) {}
+            if (loc !== 'lobby') return;
+            var tries = 0;
+            var timer = setInterval(function() {
+                tries++;
+                var logged = window.SlexionAuth && SlexionAuth.isLoggedIn();
+                if (logged) {
+                    clearInterval(timer);
+                    openOnlineLobby();
+                } else if (tries >= 25) {
+                    clearInterval(timer);
+                    try { sessionStorage.removeItem('beastplay_loc'); } catch (e) {}
+                }
+            }, 200);
+        })();
+
+        // 刷新恢复：若上次在本地/AI游戏中，自动恢复对局
+        (function autoResumeLocalGame() {
+            try {
+                var raw = localStorage.getItem(SAVE_KEY);
+                if (!raw) return;
+                var save = JSON.parse(raw);
+                if (!save || (save.gameMode !== 'local' && save.gameMode !== 'ai')) return;
+                // 延迟一下确保 DOM 就绪
+                setTimeout(function() {
+                    gameMode = save.gameMode;
+                    document.getElementById('exitGameBtn').classList.remove('hidden');
+                    showScreen('gameScreen');
+                    tryRestoreSave();
+                }, 300);
+            } catch (e) {}
+        })();
+    </script>
+</body>
+</html>

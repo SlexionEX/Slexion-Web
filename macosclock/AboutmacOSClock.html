@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-en="macOS Clock">macOS 时钟</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, 'Segoe UI', 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #0f0f1a;
+            background-image: radial-gradient(ellipse at 50% 50%, #1a1a3e 0%, #0f0f1a 100%);
+            padding: 20px;
+            user-select: none;
+            position: relative;
+        }
+
+        .blobs {
+            position: fixed;
+            inset: -10%;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 18% 22%, rgba(0,180,255,0.32), transparent 45%),
+                radial-gradient(circle at 82% 30%, rgba(32,178,170,0.30), transparent 45%),
+                radial-gradient(circle at 55% 85%, rgba(120,60,255,0.28), transparent 50%),
+                radial-gradient(circle at 88% 75%, rgba(255,80,180,0.22), transparent 42%);
+            filter: blur(24px);
+            animation: blobFloat 16s ease-in-out infinite alternate;
+        }
+        @keyframes blobFloat {
+            0% { transform: translate(0,0) scale(1); }
+            100% { transform: translate(3%,2%) scale(1.06); }
+        }
+
+        .clock-card {
+            position: relative;
+            z-index: 1;
+            background: rgba(255,255,255,0.05);
+            -webkit-backdrop-filter: blur(28px) saturate(185%) brightness(1.15);
+            backdrop-filter: blur(28px) saturate(185%) brightness(1.15);
+            padding: 50px 60px 45px;
+            border-radius: 28px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.08), 0 40px 100px rgba(0, 0, 0, 0.6);
+            min-width: 380px;
+            transition: border-color 0.5s ease;
+            overflow: hidden;
+        }
+
+        .clock-card::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 28px;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(32, 178, 170, 0.3), rgba(32, 178, 170, 0.05));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .color-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+        .color-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .color-dot:hover {
+            transform: scale(1.2);
+        }
+        .color-dot.active {
+            border-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+        }
+
+        .clock-icon {
+            font-size: 36px;
+            margin-bottom: 4px;
+            display: block;
+            opacity: 0.6;
+        }
+
+        .time {
+            font-size: 72px;
+            font-weight: 300;
+            color: white;
+            letter-spacing: 4px;
+            font-variant-numeric: tabular-nums;
+            line-height: 1.1;
+            margin-bottom: 2px;
+        }
+
+        .date {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 1px;
+            font-weight: 400;
+            margin-bottom: 16px;
+        }
+
+        .divider {
+            width: 120px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.08);
+            margin: 0 auto 16px;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 2px;
+            margin: 0 auto 16px;
+            overflow: hidden;
+        }
+        .progress-bar .fill {
+            height: 100%;
+            width: 0%;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 2px;
+            transition: width 0.1s linear;
+        }
+
+        .greeting {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.35);
+            letter-spacing: 0.5px;
+            font-weight: 300;
+        }
+
+        .theme-aqua .clock-card::before {
+            background: linear-gradient(135deg, rgba(32, 178, 170, 0.4), rgba(32, 178, 170, 0.05));
+        }
+        .theme-white .clock-card::before {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+        }
+        .theme-black .clock-card::before {
+            background: linear-gradient(135deg, rgba(100, 100, 100, 0.3), rgba(50, 50, 50, 0.05));
+        }
+
+        .theme-aqua .progress-bar .fill {
+            background: rgba(32, 178, 170, 0.6);
+        }
+        .theme-white .progress-bar .fill {
+            background: rgba(255, 255, 255, 0.5);
+        }
+        .theme-black .progress-bar .fill {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        @media (max-width: 480px) {
+            .clock-card {
+                padding: 35px 30px 30px;
+                min-width: unset;
+                width: 100%;
+            }
+            .time {
+                font-size: 52px;
+            }
+            .date {
+                font-size: 14px;
+            }
+            .progress-bar {
+                width: 150px;
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            body {
+                background: #f0f0f5;
+                background-image: radial-gradient(ellipse at 50% 50%, #e8e8f0 0%, #d5d5e0 100%);
+            }
+            .clock-card {
+                background: rgba(255, 255, 255, 0.5);
+                border-color: rgba(255, 255, 255, 0.3);
+            }
+            .time {
+                color: #1a1a2e;
+            }
+            .date {
+                color: rgba(0, 0, 0, 0.5);
+            }
+            .greeting {
+                color: rgba(0, 0, 0, 0.3);
+            }
+            .divider {
+                background: rgba(0, 0, 0, 0.08);
+            }
+            .progress-bar {
+                background: rgba(0, 0, 0, 0.08);
+            }
+            .progress-bar .fill {
+                background: rgba(0, 0, 0, 0.3);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="blobs"></div>
+
+    <div class="clock-card theme-aqua" id="clockCard">
+        <div class="color-dots">
+            <span class="color-dot active" style="background: #20B2AA;" data-theme="theme-aqua" title="Aquamarine"></span>
+            <span class="color-dot" style="background: #ffffff;" data-theme="theme-white" title="白色"></span>
+            <span class="color-dot" style="background: #222222;" data-theme="theme-black" title="黑色"></span>
+        </div>
+
+        <span class="clock-icon">🕐</span>
+        <div class="time" id="time">00:00:00</div>
+        <div class="date" id="date">2024年1月1日 星期一</div>
+        <div class="divider"></div>
+        <div class="progress-bar">
+            <div class="fill" id="progressFill"></div>
+        </div>
+        <div class="greeting" id="greeting">☀️ 下午好</div>
+    </div>
+
+    <script>
+        const timeEl = document.getElementById('time');
+        const dateEl = document.getElementById('date');
+        const progressEl = document.getElementById('progressFill');
+        const greetingEl = document.getElementById('greeting');
+        const T = window.I18N ? I18N.t.bind(I18N) : (z) => z;
+
+        function updateClock() {
+            const now = new Date();
+            const isEn = window.I18N && I18N.lang === 'en';
+
+            // 中文=北京时间(UTC+8)，英文=UTC
+            const utcMs = now.getTime() + now.getTimezoneOffset() * 60000;
+            const bj = new Date(utcMs + 8 * 3600000);
+            const ref = isEn ? now : bj;
+
+            const hh = String(ref.getHours()).padStart(2, '0');
+            const mm = String(ref.getMinutes()).padStart(2, '0');
+            const ss = String(ref.getSeconds()).padStart(2, '0');
+            timeEl.textContent = `${hh}:${mm}:${ss}`;
+
+            // 日期
+            const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            const weekdaysEn = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            if (isEn) {
+                dateEl.textContent = `${weekdaysEn[ref.getDay()]}, ${ref.getFullYear()}-${String(ref.getMonth()+1).padStart(2,'0')}-${String(ref.getDate()).padStart(2,'0')} (UTC)`;
+            } else {
+                dateEl.textContent = `${ref.getFullYear()}年${ref.getMonth()+1}月${ref.getDate()}日 ${weekdays[ref.getDay()]}`;
+            }
+
+            // 秒数进度条
+            const progress = (ref.getSeconds() + ref.getMilliseconds() / 1000) / 60;
+            progressEl.style.width = `${progress * 100}%`;
+
+            // 问候语
+            const hour = ref.getHours();
+            let greeting = '';
+            if (hour >= 5 && hour < 8) greeting = T('🌅 早上好', '🌅 Good morning');
+            else if (hour >= 8 && hour < 12) greeting = T('☀️ 上午好', '☀️ Good morning');
+            else if (hour >= 12 && hour < 14) greeting = T('☀️ 中午好', '☀️ Good noon');
+            else if (hour >= 14 && hour < 18) greeting = T('☀️ 下午好', '☀️ Good afternoon');
+            else if (hour >= 18 && hour < 20) greeting = T('🌇 傍晚好', '🌇 Good evening');
+            else if (hour >= 20 && hour < 23) greeting = T('🌙 晚上好', '🌙 Good evening');
+            else greeting = T('🌙 夜深了', '🌙 Late night');
+            greetingEl.textContent = greeting;
+        }
+
+        updateClock();
+        setInterval(updateClock, 100);
+
+        // 颜色切换
+        const dots = document.querySelectorAll('.color-dot');
+        const card = document.getElementById('clockCard');
+
+        dots.forEach(dot => {
+            dot.addEventListener('click', function () {
+                dots.forEach(d => d.classList.remove('active'));
+                this.classList.add('active');
+                const theme = this.dataset.theme;
+                card.className = `clock-card ${theme}`;
+            });
+        });
+
+        // 键盘快捷键：按 T 切换置顶
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 't' || e.key === 'T') {
+                const msg = document.createElement('div');
+                msg.style.cssText = `
+                            position: fixed;
+                            bottom: 30px;
+                            left: 50%;
+                            transform: translateX(-50%);
+                            background: rgba(0,0,0,0.7);
+                            backdrop-filter: blur(10px);
+                            color: white;
+                            padding: 10px 24px;
+                            border-radius: 12px;
+                            font-size: 14px;
+                            z-index: 999;
+                            transition: opacity 0.5s;
+                            font-family: -apple-system, 'Segoe UI', sans-serif;
+                        `;
+                msg.textContent = T('💡 网页版无法置顶，请下载桌面应用', '💡 Web version cannot stay on top, please download the desktop app');
+                document.body.appendChild(msg);
+                setTimeout(() => {
+                    msg.style.opacity = '0';
+                    setTimeout(() => msg.remove(), 500);
+                }, 2000);
+            }
+        });
+
+        // 语言切换时刷新
+        window.addEventListener('i18nchange', function () { updateClock(); });
+
+        console.log('%c🕐 macOS Clock', 'font-size:24px; font-weight:bold; color:#20B2AA;');
+        console.log('%c按 T 键查看置顶提示', 'font-size:14px; color:#888;');
+    </script>
+
+    <script src="/navbar.js"></script>
+    <script src="/account/auth.js"></script>
+    <script src="/i18n.js"></script>
+    <script src="/account.js"></script>
+
+</body>
+</html>

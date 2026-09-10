@@ -1,0 +1,315 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NETRUNNER DOWNLOAD</title>
+    <style>
+        /* 全局赛博朋克色调 */
+        :root {
+            --neon-cyan: #00f0ff;
+            --neon-magenta: #ff00ff;
+            --deep-bg: #0b0c10;
+            --panel-bg: #1f2833;
+            --text-main: #c5c6c7;
+            --glitch-font: 'Courier New', monospace;
+        }
+
+        /* 故障闪烁动画 */
+        @keyframes glitch {
+            0% { clip-path: inset(10% 0 80% 0); }
+            20% { clip-path: inset(80% 0 10% 0); }
+            40% { clip-path: inset(40% 0 60% 0); }
+            60% { clip-path: inset(60% 0 40% 0); }
+            80% { clip-path: inset(20% 0 70% 0); }
+            100% { clip-path: inset(10% 0 80% 0); }
+        }
+
+        @keyframes flicker {
+            0% { opacity: 1; }
+            5% { opacity: 0.7; }
+            10% { opacity: 1; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+
+        body {
+            background-color: var(--deep-bg);
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: var(--text-main);
+            font-family: var(--glitch-font);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* ===== Liquid Glass 背景彩色光晕 ===== */
+        .blobs {
+            position: fixed;
+            inset: -10%;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 20% 25%, rgba(0,240,255,0.32), transparent 45%),
+                radial-gradient(circle at 80% 30%, rgba(255,0,255,0.26), transparent 45%),
+                radial-gradient(circle at 50% 85%, rgba(60,110,255,0.32), transparent 50%);
+            filter: blur(24px);
+            animation: blobFloat 16s ease-in-out infinite alternate;
+        }
+        @keyframes blobFloat {
+            0% { transform: translate(0,0) scale(1); }
+            100% { transform: translate(3%,2%) scale(1.06); }
+        }
+
+        .cyber-card {
+            background: rgba(31, 40, 51, 0.35);
+            -webkit-backdrop-filter: blur(18px) saturate(180%) brightness(1.15);
+            backdrop-filter: blur(18px) saturate(180%) brightness(1.15);
+            border: 1px solid rgba(255,255,255,0.16);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.08), 0 0 20px rgba(0, 240, 255, 0.2), 0 12px 40px rgba(0,0,0,0.45);
+            border-radius: 24px;
+            padding: 48px 40px;
+            width: 100%;
+            max-width: 460px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .cyber-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 45%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.09), transparent);
+            pointer-events: none;
+        }
+
+        /* 扫描线装饰 */
+        .cyber-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.2) 2px, rgba(0,0,0,0.2) 4px);
+            pointer-events: none;
+            animation: scanline 8s linear infinite;
+            z-index: 10;
+        }
+
+        .cyber-header {
+            text-align: center;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #fff;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px var(--neon-cyan);
+            margin: 0 0 4px 0;
+            animation: flicker 3s infinite;
+        }
+
+        h1 .glitch-text {
+            color: var(--neon-magenta);
+            text-shadow: 0 0 10px var(--neon-magenta);
+        }
+
+        p.subtitle {
+            color: var(--neon-cyan);
+            font-size: 12px;
+            letter-spacing: 5px;
+            margin: 0;
+            opacity: 0.8;
+            border-bottom: 1px solid rgba(0, 240, 255, 0.3);
+            padding-bottom: 12px;
+        }
+
+        .file-info-container {
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            padding: 16px;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .file-info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 13px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+        }
+
+        .file-info-row:last-child {
+            border-bottom: none;
+        }
+
+        .file-label {
+            color: #888;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+
+        .file-value {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .file-value.cyan {
+            color: var(--neon-cyan);
+            text-shadow: 0 0 5px rgba(0, 240, 255, 0.3);
+        }
+
+        .btn-download {
+            background: transparent;
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-cyan);
+            padding: 16px;
+            width: 100%;
+            font-family: var(--glitch-font);
+            font-size: 16px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 0 5px rgba(0, 240, 255, 0.1);
+        }
+
+        .btn-download:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 20px var(--neon-cyan), inset 0 0 20px var(--neon-cyan);
+            text-shadow: none;
+        }
+
+        .btn-download.loading {
+            color: #888;
+            border-color: #555;
+            box-shadow: none;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        .btn-download.loading:hover {
+            background: transparent;
+            color: #888;
+            box-shadow: none;
+        }
+
+        .footer-note {
+            text-align: center;
+            font-size: 10px;
+            color: #555;
+            margin-top: 24px;
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 角落的装饰线 */
+        .corner-decoration {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--neon-cyan);
+            opacity: 0.5;
+        }
+        .corner-tl { top: 8px; left: 8px; border-right: none; border-bottom: none; }
+        .corner-tr { top: 8px; right: 8px; border-left: none; border-bottom: none; }
+        .corner-bl { bottom: 8px; left: 8px; border-right: none; border-top: none; }
+        .corner-br { bottom: 8px; right: 8px; border-left: none; border-top: none; }
+    </style>
+</head>
+<body>
+
+    <div class="blobs"></div>
+
+    <div class="cyber-card">
+        <!-- 四角装饰 -->
+        <div class="corner-decoration corner-tl"></div>
+        <div class="corner-decoration corner-tr"></div>
+        <div class="corner-decoration corner-bl"></div>
+        <div class="corner-decoration corner-br"></div>
+
+        <div class="cyber-header">
+            <h1>SLEXION<span class="glitch-text">_BROWSER</span></h1>
+            <p class="subtitle">// VER 1.0 //Qt EDITION//</p>
+        </div>
+
+        <div class="file-info-container">
+            <div class="file-info-row">
+                <span class="file-label">// TARGET</span>
+                <span class="file-value cyan">SLXBRW_1.0_Setup64.exe</span>
+            </div>
+            <div class="file-info-row">
+                <span class="file-label">// SIZE</span>
+                <span class="file-value">99.4 MB</span>
+            </div>
+            <div class="file-info-row">
+                <span class="file-label">// STATUS</span>
+                <span class="file-value" id="statusText">READY</span>
+            </div>
+        </div>
+
+        <button class="btn-download" id="downloadBtn" data-en="[ Start Download ]">[ 开始下载 ]</button>
+
+        <p class="footer-note" data-en="// Built on QWebEngine Chromium · LZMA2 extreme size optimization //">// 基于 QWebEngine Chromium 构建 · LZMA2极致大小优化 //</p>
+    </div>
+
+<script src="/navbar.js"></script>
+<script src="/account/auth.js"></script>
+<script src="/i18n.js"></script>
+<script src="/account.js"></script>
+<script>
+        const btn = document.getElementById('downloadBtn');
+        const statusText = document.getElementById('statusText');
+        const T = window.I18N ? I18N.t.bind(I18N) : (z)=>z;
+
+        // ✅ 直接指定下载链接（硬编码）
+        const downloadUrl = 'https://slexion.com/download/msi/SLXBRW_1.0_Setup64.exe';
+
+        btn.addEventListener('click', function() {
+            // 更新 UI
+            btn.textContent = T('[ 下载中 ]', '[ Downloading ]');
+            btn.classList.add('loading');
+            statusText.textContent = 'DOWNLOADING...';
+            statusText.style.color = '#ff00ff';
+
+            // 触发下载
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.download = 'SLXBRW_1.0_Setup64.exe';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // 恢复 UI
+            setTimeout(() => {
+                btn.textContent = T('[ 下载完成 ]', '[ Complete ]');
+                btn.classList.remove('loading');
+                statusText.textContent = 'COMPLETED';
+                statusText.style.color = '#00f0ff';
+            }, 1500);
+        });
+    </script>
+</body>
+</html>

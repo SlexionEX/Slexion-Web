@@ -1,0 +1,46 @@
+# ===== 敏感配置文件（含密码/密钥） =====
+account/config.php
+lib/mailer.php
+.user.ini
+*.env
+*.env.local
+
+# ===== 二进制文件 =====
+*.exe
+*.dll
+*.msi
+*.zip
+*.tar
+*.gz
+*.rar
+*.7z
+*.deb
+*.rpm
+
+# ===== 下载目录（大型安装包） =====
+download/msi/
+instzip/
+
+# ===== 临时文件 =====
+*.tmp
+*.log
+*.bak
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ===== IDE/编辑器 =====
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# ===== 操作系统 =====
+$RECYCLE.BIN/
+System Volume Information/
+
+# ===== 依赖（如果有） =====
+node_modules/
+vendor/

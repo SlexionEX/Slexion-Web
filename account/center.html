@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-en="User Center | Slexion">用户中心 | Slexion</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 24px 16px 60px;
+            position: relative;
+        }
+        .blobs {
+            position: fixed;
+            inset: -10%;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 20% 25%, rgba(0,255,255,0.26), transparent 45%),
+                radial-gradient(circle at 80% 30%, rgba(255,0,255,0.22), transparent 45%),
+                radial-gradient(circle at 50% 85%, rgba(60,110,255,0.30), transparent 50%);
+            filter: blur(24px);
+            animation: blobFloat 16s ease-in-out infinite alternate;
+        }
+        @keyframes blobFloat {
+            0% { transform: translate(0,0) scale(1); }
+            100% { transform: translate(30px,-20px) scale(1.08); }
+        }
+
+        .center-wrap {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 560px;
+            margin-top: 72px;
+        }
+        .center-card {
+            background: rgba(30,30,30,0.72);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 24px;
+            padding: 32px 28px;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.15);
+        }
+        .center-title {
+            margin: 0 0 24px;
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00e5ff, #ff00ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
+
+        /* 用户信息 */
+        .user-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .avatar-preview {
+            width: 84px;
+            height: 84px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, rgba(0,229,255,.25), rgba(255,0,255,.25));
+            border: 2px solid rgba(0,229,255,.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            font-weight: 700;
+            color: #00e5ff;
+            overflow: hidden;
+            object-fit: cover;
+        }
+        .avatar-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .user-meta { min-width: 0; }
+        .user-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 6px;
+            word-break: break-all;
+        }
+        .user-email {
+            font-size: 13px;
+            color: #888;
+            word-break: break-all;
+        }
+
+        .sep {
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+            margin: 20px 0;
+        }
+
+        .field-label {
+            display: block;
+            color: #aaa;
+            font-size: 12px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .avatar-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            transition: transform .15s, box-shadow .2s, opacity .2s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #00e5ff, #ff00ff);
+            color: #000;
+            box-shadow: 0 4px 16px rgba(0,229,255,.3);
+        }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(255,0,255,.4); }
+        .btn-primary:active { transform: translateY(0); }
+        .btn-primary:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+        .btn-ghost {
+            background: rgba(255,255,255,.08);
+            color: #d4d4d4;
+            border: 1px solid rgba(255,255,255,.18);
+        }
+        .btn-ghost:hover { background: rgba(255,255,255,.14); }
+
+        .file-input {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+        }
+        .file-name {
+            font-size: 12px;
+            color: #777;
+            margin-top: 10px;
+            word-break: break-all;
+        }
+
+        .msg {
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-top: 16px;
+            display: none;
+        }
+        .msg.error { display: block; background: rgba(255,80,80,.12); color: #ff6b6b; border: 1px solid rgba(255,80,80,.25); }
+        .msg.success { display: block; background: rgba(0,229,255,.1); color: #00e5ff; border: 1px solid rgba(0,229,255,.25); }
+        .msg.warn { display: block; background: rgba(255,180,0,.1); color: #ffb400; border: 1px solid rgba(255,180,0,.25); }
+
+        /* 未登录 */
+        .login-prompt { text-align: center; padding: 24px 0 8px; }
+        .login-prompt p { color: #aaa; font-size: 14px; margin-bottom: 20px; }
+
+        /* 设置行 */
+        .setting-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 4px 0;
+        }
+        .setting-info { flex: 1; min-width: 0; }
+        .setting-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #e8e8e8;
+            margin-bottom: 3px;
+        }
+        .setting-desc {
+            font-size: 12px;
+            color: #888;
+            line-height: 1.4;
+        }
+
+        /* ===== Apple WWDC 2025 风格开关 ===== */
+        .apple-switch {
+            position: relative;
+            width: 54px;
+            height: 32px;
+            border: none;
+            padding: 0;
+            margin: 0;
+            background: transparent;
+            cursor: pointer;
+            flex-shrink: 0;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
+        .apple-switch:focus-visible {
+            box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.4);
+            border-radius: 16px;
+        }
+        .apple-switch-track {
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            background: rgba(120, 120, 128, 0.32);
+            transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), inset 0 0 0 0.5px rgba(255, 255, 255, 0.1);
+        }
+        /* WWDC 2025: 开启时背景有微妙的渐变光泽 */
+        .apple-switch-track::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(255,255,255,0.08), transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .apple-switch[aria-checked="true"] .apple-switch-track {
+            background: linear-gradient(135deg, #30D158, #28C840);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2), inset 0 0 0 0.5px rgba(255, 255, 255, 0.25), 0 2px 8px rgba(48, 209, 88, 0.35);
+        }
+        .apple-switch[aria-checked="true"] .apple-switch-track::before {
+            opacity: 1;
+        }
+        .apple-switch-knob {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(180deg, #ffffff, #f0f0f0);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+            will-change: transform;
+        }
+        /* WWDC 2025: 滑块有微妙的内阴影光泽 */
+        .apple-switch-knob::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 6px;
+            right: 6px;
+            height: 10px;
+            border-radius: 50%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0));
+            pointer-events: none;
+        }
+        .apple-switch[aria-checked="true"] .apple-switch-knob {
+            transform: translateX(22px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+        /* 点击时的弹性缩放反馈（WWDC 2025 新增） */
+        .apple-switch:active .apple-switch-knob {
+            transform: scale(0.92);
+        }
+        .apple-switch[aria-checked="true"]:active .apple-switch-knob {
+            transform: translateX(22px) scale(0.92);
+        }
+        /* 减少动画模式下开关本身也用简单过渡 */
+        body.reduce-motion .apple-switch-track,
+        body.reduce-motion .apple-switch-knob,
+        body.reduce-motion .apple-switch-track::before {
+            transition-duration: 0.15s !important;
+            transition-timing-function: linear !important;
+        }
+
+        /* ===== Apple 风格滑块 ===== */
+        .apple-slider-wrap {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 4px 0 8px;
+        }
+        .apple-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(120, 120, 128, 0.32);
+            outline: none;
+            cursor: pointer;
+            position: relative;
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* 已填充部分（通过 JS 设置 CSS 变量） */
+        .apple-slider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: var(--slider-fill, 33%);
+            border-radius: 3px;
+            background: linear-gradient(90deg, #00e5ff, #ff00ff);
+            pointer-events: none;
+            transition: width 0.1s ease;
+        }
+        .apple-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: linear-gradient(180deg, #ffffff, #f0f0f0);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            cursor: grab;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+            position: relative;
+            z-index: 2;
+        }
+        .apple-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+        .apple-slider::-webkit-slider-thumb:active {
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+        .apple-slider::-moz-range-thumb {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: linear-gradient(180deg, #ffffff, #f0f0f0);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            cursor: grab;
+            border: none;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .apple-slider::-moz-range-track {
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(120, 120, 128, 0.32);
+        }
+        .apple-slider::-moz-range-progress {
+            height: 6px;
+            border-radius: 3px;
+            background: linear-gradient(90deg, #00e5ff, #ff00ff);
+        }
+        .apple-slider-value {
+            min-width: 48px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #00e5ff;
+            font-variant-numeric: tabular-nums;
+            background: rgba(0, 229, 255, 0.1);
+            padding: 4px 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 229, 255, 0.25);
+        }
+        .apple-slider-value span {
+            color: #fff;
+        }
+        body.reduce-motion .apple-slider::before,
+        body.reduce-motion .apple-slider::-webkit-slider-thumb {
+            transition: none !important;
+        }
+
+        @media (max-width: 480px) {
+            .center-card { padding: 24px 18px; }
+            .avatar-preview { width: 68px; height: 68px; font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="blobs"></div>
+
+    <div class="center-wrap">
+        <div class="center-card">
+            <h1 class="center-title" data-en="User Center">用户中心</h1>
+
+            <!-- 未登录提示 -->
+            <div id="loginPrompt" class="login-prompt" style="display:none;">
+                <p data-en="Please sign in to access your user center.">请先登录，才能访问用户中心。</p>
+                <button class="btn btn-primary" id="goLoginBtn" data-en="Sign in">去登录</button>
+            </div>
+
+            <!-- 已登录用户信息 -->
+            <div id="userInfo" style="display:none;">
+                <div class="user-row">
+                    <div class="avatar-preview" id="avatarPreview"></div>
+                    <div class="user-meta">
+                        <div class="user-name" id="userName"></div>
+                        <div class="user-email" id="userEmail"></div>
+                    </div>
+                </div>
+
+                <div class="sep"></div>
+
+                <label class="field-label" data-en="Avatar (PNG / JPG / GIF / WEBP, max 1MB)">头像（PNG / JPG / GIF / WEBP，最大 1MB）</label>
+                <div class="avatar-actions">
+                    <input type="file" id="avatarFile" class="file-input" accept="image/png,image/jpeg,image/gif,image/webp">
+                    <button class="btn btn-ghost" id="pickBtn" data-en="Choose image">选择图片</button>
+                    <button class="btn btn-primary" id="saveBtn" disabled data-en="Save avatar">保存头像</button>
+                </div>
+                <div class="file-name" id="fileName"></div>
+
+                <div class="msg" id="msg"></div>
+
+                <div class="sep"></div>
+
+                <label class="field-label" data-en="Layout">布局</label>
+                <div class="avatar-actions">
+                    <button class="btn btn-ghost" id="resetLayoutBtn" data-en="Reset default layout">恢复默认布局</button>
+                </div>
+                <div class="file-name" data-en="Reset navbar, language toggle and login button positions.">重置导航栏、语言切换和登录按钮的位置。</div>
+
+                <div class="sep"></div>
+
+                <label class="field-label" data-en="Accessibility">辅助功能</label>
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <div class="setting-title" data-en="Reduce motion">减少动画</div>
+                        <div class="setting-desc" data-en="Minimize animations across the entire site.">减少全站的动画效果。</div>
+                    </div>
+                    <!-- Apple WWDC 2025 风格开关 -->
+                    <button class="apple-switch" id="reduceMotionSwitch" role="switch" aria-checked="false" aria-label="Reduce motion">
+                        <span class="apple-switch-track">
+                            <span class="apple-switch-knob"></span>
+                        </span>
+                    </button>
+                </div>
+
+                <div class="setting-row" style="margin-top:16px;">
+                    <div class="setting-info">
+                        <div class="setting-title" data-en="Scroll animation speed">滚动动画速度</div>
+                        <div class="setting-desc" data-en="Adjust how fast elements fade in when scrolling.">调整页面滚动时元素淡入出现的速度。</div>
+                    </div>
+                </div>
+                <!-- Apple 风格滑块 -->
+                <div class="apple-slider-wrap">
+                    <input type="range" class="apple-slider" id="fadeSpeedSlider" min="0.2" max="2.0" step="0.1" value="0.8" aria-label="Fade speed">
+                    <div class="apple-slider-value"><span id="fadeSpeedValue">0.8</span>s</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/navbar.js"></script>
+    <script src="/account/auth.js"></script>
+    <script src="/i18n.js"></script>
+    <script src="/account.js"></script>
+    <script>
+    (function () {
+        'use strict';
+
+        var state = { loggedin: false, username: '', email: '', avatar: '', csrf: '' };
+        var pendingFile = null;
+
+        var avatarPreview = document.getElementById('avatarPreview');
+        var userNameEl = document.getElementById('userName');
+        var userEmailEl = document.getElementById('userEmail');
+        var loginPrompt = document.getElementById('loginPrompt');
+        var userInfo = document.getElementById('userInfo');
+        var avatarFile = document.getElementById('avatarFile');
+        var pickBtn = document.getElementById('pickBtn');
+        var saveBtn = document.getElementById('saveBtn');
+        var fileNameEl = document.getElementById('fileName');
+        var msgEl = document.getElementById('msg');
+        var goLoginBtn = document.getElementById('goLoginBtn');
+        var resetLayoutBtn = document.getElementById('resetLayoutBtn');
+        var reduceMotionSwitch = document.getElementById('reduceMotionSwitch');
+        var fadeSpeedSlider = document.getElementById('fadeSpeedSlider');
+        var fadeSpeedValue = document.getElementById('fadeSpeedValue');
+
+        function showMsg(text, type) {
+            msgEl.className = 'msg ' + (type || 'error');
+            msgEl.textContent = text;
+        }
+        function clearMsg() {
+            msgEl.className = 'msg';
+            msgEl.textContent = '';
+        }
+        function avatarUrl(name) {
+            return name ? '/usertx/' + name : '';
+        }
+        function renderAvatar(name) {
+            var url = avatarUrl(name);
+            if (url) {
+                avatarPreview.innerHTML = '';
+                var img = document.createElement('img');
+                img.src = url;
+                img.alt = 'avatar';
+                avatarPreview.appendChild(img);
+            } else {
+                avatarPreview.textContent = state.username ? state.username.charAt(0).toUpperCase() : '?';
+                avatarPreview.innerHTML = avatarPreview.textContent;
+            }
+        }
+
+        function fetchSession() {
+            return fetch('/account/session.php?t=' + Date.now(), { credentials: 'same-origin', cache: 'no-store' })
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                    state.loggedin = !!d.loggedin;
+                    state.username = d.username || '';
+                    state.email = d.email || '';
+                    state.avatar = d.avatar || '';
+                    state.csrf = d.csrf_token || '';
+                });
+        }
+
+        function render() {
+            if (!state.loggedin) {
+                loginPrompt.style.display = 'block';
+                userInfo.style.display = 'none';
+                return;
+            }
+            loginPrompt.style.display = 'none';
+            userInfo.style.display = 'block';
+            userNameEl.textContent = state.username;
+            userEmailEl.textContent = state.email || (window.I18N && I18N.lang === 'en' ? 'No email bound' : '未绑定邮箱');
+            renderAvatar(state.avatar);
+        }
+
+        // 选择图片：前端预检大小
+        pickBtn.addEventListener('click', function () {
+            avatarFile.click();
+        });
+        avatarFile.addEventListener('change', function () {
+            var file = avatarFile.files && avatarFile.files[0];
+            pendingFile = null;
+            saveBtn.disabled = true;
+            clearMsg();
+            if (!file) {
+                fileNameEl.textContent = '';
+                return;
+            }
+            fileNameEl.textContent = file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
+            if (file.size > 1048576) {
+                showMsg(window.I18N && I18N.lang === 'en'
+                    ? 'Avatar must be smaller than 1MB.'
+                    : '头像不能超过 1MB，请重新选择。', 'warn');
+                return;
+            }
+            if (file.type.indexOf('image/') !== 0) {
+                showMsg(window.I18N && I18N.lang === 'en'
+                    ? 'Please choose an image file.'
+                    : '请选择图片文件。', 'warn');
+                return;
+            }
+            // 本地预览
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                avatarPreview.innerHTML = '';
+                var img = document.createElement('img');
+                img.src = e.target.result;
+                avatarPreview.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+            pendingFile = file;
+            saveBtn.disabled = false;
+        });
+
+        // 保存头像
+        saveBtn.addEventListener('click', function () {
+            if (!pendingFile) return;
+            saveBtn.disabled = true;
+            saveBtn.textContent = window.I18N && I18N.lang === 'en' ? 'Uploading...' : '上传中...';
+            clearMsg();
+
+            var fd = new FormData();
+            fd.append('avatar', pendingFile, pendingFile.name);
+            fd.append('csrf_token', state.csrf);
+
+            fetch('/account/upload_avatar.php', {
+                method: 'POST',
+                credentials: 'same-origin',
+                body: fd
+            })
+            .then(function (r) { return r.json().then(function (d) { return { status: r.status, data: d }; }); })
+            .then(function (res) {
+                if (res.data.success) {
+                    state.avatar = res.data.avatar;
+                    renderAvatar(state.avatar);
+                    pendingFile = null;
+                    fileNameEl.textContent = '';
+                    showMsg(res.data.message, 'success');
+                    // 通知全站登录组件更新头像
+                    if (window.dispatchEvent) {
+                        try { window.dispatchEvent(new CustomEvent('avatarupdated', { detail: { avatar: res.data.avatar } })); } catch (e) {}
+                    }
+                } else {
+                    showMsg(res.data.error || '上传失败', 'error');
+                }
+            })
+            .catch(function () {
+                showMsg(window.I18N && I18N.lang === 'en' ? 'Network error, please retry.' : '网络错误，请稍后重试', 'error');
+            })
+            .finally(function () {
+                saveBtn.disabled = true;
+                saveBtn.textContent = window.I18N && I18N.lang === 'en' ? 'Save avatar' : '保存头像';
+                avatarFile.value = '';
+            });
+        });
+
+        // 去登录
+        goLoginBtn.addEventListener('click', function () {
+            if (window.openLoginModal) {
+                window.openLoginModal();
+            } else {
+                window.location.href = '/accountcenter?login=1';
+            }
+        });
+
+        // 恢复默认布局
+        if (resetLayoutBtn) {
+            resetLayoutBtn.addEventListener('click', function () {
+                var keys = ['slexion_nav_pos', 'slexion_i18n_pos', 'slexion_login_pos'];
+                var removed = 0;
+                keys.forEach(function (k) {
+                    if (localStorage.getItem(k)) {
+                        localStorage.removeItem(k);
+                        removed++;
+                    }
+                });
+                var msg = removed > 0
+                    ? (window.I18N && I18N.lang === 'en' ? 'Layout reset, reloading...' : '布局已重置，正在刷新...')
+                    : (window.I18N && I18N.lang === 'en' ? 'Already using default layout.' : '已经是默认布局了。');
+                showMsg(msg, removed > 0 ? 'success' : 'warn');
+                if (removed > 0) {
+                    setTimeout(function () { location.reload(); }, 800);
+                }
+            });
+        }
+
+        // 减少动画开关（Apple WWDC 2025 风格）
+        if (reduceMotionSwitch) {
+            // 初始化：从 localStorage 读取状态
+            function applyReduceMotion(enabled) {
+                if (enabled) {
+                    document.body.classList.add('reduce-motion');
+                    reduceMotionSwitch.setAttribute('aria-checked', 'true');
+                } else {
+                    document.body.classList.remove('reduce-motion');
+                    reduceMotionSwitch.setAttribute('aria-checked', 'false');
+                }
+                // 通知全站
+                try {
+                    window.dispatchEvent(new CustomEvent('reducemotionchange', { detail: { enabled: enabled } }));
+                } catch (e) {}
+            }
+
+            var savedReduceMotion = localStorage.getItem('slexion_reduce_motion') === '1';
+            applyReduceMotion(savedReduceMotion);
+
+            // 点击切换
+            reduceMotionSwitch.addEventListener('click', function () {
+                var current = reduceMotionSwitch.getAttribute('aria-checked') === 'true';
+                var next = !current;
+                applyReduceMotion(next);
+                localStorage.setItem('slexion_reduce_motion', next ? '1' : '0');
+                // 触觉反馈（如果支持）
+                if (navigator.vibrate) {
+                    navigator.vibrate(10);
+                }
+            });
+        }
+
+        // 淡入速度滑块
+        if (fadeSpeedSlider) {
+            function applyAnimSpeed(speed) {
+                speed = parseFloat(speed);
+                if (isNaN(speed) || speed < 0.2) speed = 0.8;
+                fadeSpeedSlider.value = speed;
+                fadeSpeedValue.textContent = speed.toFixed(1);
+                // 设置全站动画速度 CSS 变量
+                document.documentElement.style.setProperty('--anim-duration', speed + 's');
+                // 更新滑块填充百分比
+                var min = parseFloat(fadeSpeedSlider.min);
+                var max = parseFloat(fadeSpeedSlider.max);
+                var pct = ((speed - min) / (max - min)) * 100;
+                fadeSpeedSlider.style.setProperty('--slider-fill', pct + '%');
+                // 通知全站
+                try {
+                    window.dispatchEvent(new CustomEvent('animspeedchange', { detail: { speed: speed } }));
+                } catch (e) {}
+            }
+
+            // 初始化：从 localStorage 读取
+            var savedSpeed = localStorage.getItem('slexion_anim_speed');
+            applyAnimSpeed(savedSpeed || 0.8);
+
+            // 滑块变化
+            fadeSpeedSlider.addEventListener('input', function () {
+                applyAnimSpeed(fadeSpeedSlider.value);
+                localStorage.setItem('slexion_anim_speed', fadeSpeedSlider.value);
+            });
+        }
+
+        // 初始化
+        fetchSession().then(render);
+        // 登录/登出后自动刷新状态
+        window.addEventListener('i18nchange', render);
+        window.addEventListener('avatarupdated', function () {
+            fetchSession().then(render);
+        });
+        // 登录状态变化检测（轮询一次：等待 account.js 初始化）
+        setTimeout(function () {
+            fetchSession().then(function () {
+                render();
+                // 如果登录弹窗被关闭且已登录，刷新页面数据
+                var old = state.loggedin;
+                fetchSession().then(render);
+            });
+        }, 600);
+    })();
+    </script>
+</body>
+</html>

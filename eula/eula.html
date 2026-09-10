@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <link rel="icon" href="/favicon.ico">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-en="EULA | Slexion">EULA | Slexion</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{
+            background:#050118 url("/pic/cyberbg.png") no-repeat center center fixed;
+            background-size:cover;
+            color:#e0e0e0;
+            font-family:-apple-system,'Segoe UI',sans-serif;
+            position:relative;
+            min-height:100vh;
+        }
+        .blobs{
+            position:fixed;
+            inset:-10%;
+            z-index:0;
+            pointer-events:none;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(0,255,255,0.30), transparent 42%),
+                radial-gradient(circle at 85% 25%, rgba(255,0,255,0.26), transparent 42%),
+                radial-gradient(circle at 50% 85%, rgba(60,110,255,0.32), transparent 45%);
+            filter:blur(22px);
+        }
+        .container{
+            max-width:900px;
+            margin:0 auto;
+            padding:40px 20px 60px;
+            position:relative;
+            z-index:1;
+        }
+        .header{
+            text-align:center;
+            margin-bottom:40px;
+        }
+        .cyber-title{
+            font-size:42px;
+            color:#0ff;
+            text-shadow:0 0 10px #0ff,0 0 20px rgba(0,255,255,0.5);
+            letter-spacing:4px;
+            margin-bottom:10px;
+        }
+        .cyber-sub{
+            color:#aaa;
+            font-size:14px;
+        }
+        .glitch-line{
+            height:3px;
+            background:linear-gradient(90deg,transparent,#f0f,transparent);
+            margin:20px 0;
+            box-shadow:0 0 10px #f0f;
+        }
+        .card{
+            background:rgba(255,255,255,0.05);
+            -webkit-backdrop-filter:blur(18px) saturate(180%) brightness(1.12);
+            backdrop-filter:blur(18px) saturate(180%) brightness(1.12);
+            border:1px solid rgba(255,255,255,0.14);
+            border-left:4px solid #0ff;
+            box-shadow:inset 0 1px 0 rgba(255,255,255,0.28),0 12px 32px rgba(0,0,0,0.40);
+            padding:25px 30px;
+            margin:20px 0;
+            position:relative;
+            overflow:hidden;
+            border-radius:16px;
+        }
+        .card::before{
+            content:"";
+            position:absolute;
+            top:0;left:0;right:0;height:45%;
+            background:linear-gradient(180deg,rgba(255,255,255,0.09),transparent);
+            pointer-events:none;
+        }
+        .card h2{
+            color:#0ff;
+            font-size:20px;
+            margin-bottom:15px;
+            display:flex;
+            align-items:center;
+            gap:10px;
+        }
+        .card h2 i{
+            color:#f0f;
+        }
+        .card h3{
+            color:#f0f;
+            font-size:16px;
+            margin:15px 0 8px;
+        }
+        .card p{
+            line-height:1.8;
+            margin-bottom:10px;
+            color:#ccc;
+            font-size:14px;
+        }
+        .card ul{
+            margin:10px 0 10px 20px;
+        }
+        .card li{
+            line-height:1.8;
+            margin-bottom:6px;
+            color:#ccc;
+            font-size:14px;
+        }
+        .highlight{
+            color:#ff6b6b;
+            font-weight:bold;
+        }
+        .warn-box{
+            background:rgba(255,107,107,0.1);
+            border:1px solid rgba(255,107,107,0.3);
+            border-left:4px solid #ff6b6b;
+            border-radius:8px;
+            padding:15px 20px;
+            margin:15px 0;
+        }
+        .warn-box p{
+            color:#ff9999;
+            margin:0;
+        }
+        .footer{
+            text-align:center;
+            margin-top:40px;
+            padding-top:20px;
+            border-top:1px solid rgba(255,255,255,0.1);
+            color:#666;
+            font-size:12px;
+        }
+        .footer a{
+            color:#0ff;
+            text-decoration:none;
+        }
+        .last-updated{
+            text-align:center;
+            color:#888;
+            font-size:13px;
+            margin-bottom:30px;
+        }
+        @media (max-width:600px){
+            .cyber-title{font-size:28px;}
+            .card{padding:20px;}
+            .card h2{font-size:17px;}
+        }
+    </style>
+</head>
+<body>
+    <div class="blobs"></div>
+    <div class="container">
+        <div class="header">
+            <h1 class="cyber-title">EULA</h1>
+            <p class="cyber-sub" data-en="End User License Agreement">最终用户许可协议 | End User License Agreement</p>
+        </div>
+        <div class="glitch-line"></div>
+        <p class="last-updated" data-en="Last Updated: September 4, 2026 | Effective Date: September 4, 2026">最后更新日期：2026年9月4日 | 生效日期：2026年9月4日</p>
+
+        <div class="card">
+            <h2><i class="fas fa-file-contract"></i><span data-en="1. Acceptance of Agreement">1. 协议接受</span></h2>
+            <p data-en="Welcome to Slexion (hereinafter referred to as &quot;this Website&quot;, &quot;we&quot;, &quot;us&quot;). Before using any service provided by this Website (including but not limited to web browsing, account registration, online games, VLOG publishing, feedback submission, etc.), please carefully read the entire content of this End User License Agreement (hereinafter referred to as &quot;this Agreement&quot;).">欢迎使用 Slexion（以下简称"本网站"、"我们"）。在使用本网站提供的任何服务（包括但不限于网页浏览、账号注册、在线游戏、VLOG发布、反馈提交等）之前，请您仔细阅读本最终用户许可协议（以下简称"本协议"）的全部内容。</p>
+            <p data-en="By accessing, browsing, or using any service of this Website, you indicate that you have read, understood, and agreed to accept all terms of this Agreement. If you do not agree with any term of this Agreement, please stop using this Website immediately.">您通过访问、浏览或使用本网站的任何服务，即表示您已阅读、理解并同意接受本协议的全部条款。如果您不同意本协议的任何条款，请立即停止使用本网站。</p>
+            <div class="warn-box">
+                <p data-en-html="<i class=&quot;fas fa-exclamation-triangle&quot;></i> Minor Notice: If you are under 18 years of age, please read this Agreement in the company of your legal guardian and use this Website only after obtaining guardian consent."><i class="fas fa-exclamation-triangle"></i> 未成年人使用提示：若您未满18周岁，请在法定监护人的陪同下阅读本协议，并在取得监护人同意后使用本网站。</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-copyright"></i><span data-en="2. Intellectual Property">2. 知识产权</span></h2>
+            <h3 data-en="2.1 Ownership of Website Content">2.1 网站内容所有权</h3>
+            <p data-en="All content contained on this Website, including but not limited to text, images, audio, video, graphics, interface design, web code, game code, trademarks, logos, domain names, etc., is the intellectual property of Slexion or the relevant rights holders. The Website code is open source under the MIT License. You may freely use, copy, modify, and distribute it in compliance with the MIT License.">本网站包含的所有内容，包括但不限于文本、图片、音频、视频、图表、界面设计、网页代码、游戏代码、商标、标识、域名等，其知识产权归 Slexion 或相关权利人所有。网站代码以 MIT 许可证开源，您可在遵守 MIT 许可证的前提下自由使用、复制、修改和分发。</p>
+            <h3 data-en="2.2 Usage Restrictions">2.2 使用限制</h3>
+            <p data-en="When using this Website, you shall not:">在使用本网站时，您不得：</p>
+            <ul>
+                <li data-en="Remove or alter copyright notices, MIT License notices, or other proprietary notices in the Website content">删除或改变本网站内容中的版权声明、MIT 许可证声明或其他所有权声明</li>
+                <li data-en="Use crawlers, bots, or other automated tools to maliciously bulk-fetch Website content or interfere with normal Website operation">使用爬虫、机器人或其他自动化工具恶意批量获取本网站内容或干扰网站正常运行</li>
+                <li data-en="Conduct malicious attacks, inject malicious code, or exploit vulnerabilities to disrupt services">对本网站进行恶意攻击、注入恶意代码或利用漏洞破坏服务</li>
+                <li data-en="Use the Website's trademarks or logos in a misleading manner (implying official affiliation with Slexion)">将本网站的商标、标识用于误导性用途（暗示与 Slexion 有官方关联）</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-user-shield"></i><span data-en="3. Account Registration and Use">3. 账号注册与使用</span></h2>
+            <h3 data-en="3.1 Registration Requirements">3.1 注册条件</h3>
+            <p data-en="When registering for a Slexion Account, you undertake to:">您在注册 Slexion Account 时，承诺：</p>
+            <ul>
+                <li data-en="Provide true, accurate, and complete registration information (including username, email, etc.)">提供真实、准确、完整的注册信息（包括用户名、邮箱等）</li>
+                <li data-en="Promptly update registration information to maintain its accuracy">及时更新注册信息以保持其准确性</li>
+                <li data-en="Have full civil capacity, or have obtained guardian consent">您具备完全民事行为能力，或已取得监护人同意</li>
+                <li data-en="Your registered username shall not infringe upon the legitimate rights of others, nor contain illegal or harmful information">您注册的用户名不得侵犯他人合法权益，不得含有违法或不良信息</li>
+            </ul>
+            <h3 data-en="3.2 Account Security">3.2 账号安全</h3>
+            <p data-en="You shall properly safeguard your account password and be responsible for all activities conducted under your account. If you discover that your account has been compromised or there is a security vulnerability, you shall notify us immediately. Any account losses resulting from your failure to properly safeguard your account shall be borne by you.">您应妥善保管账号密码，对使用您账号进行的所有活动承担责任。如发现账号被盗用或存在安全漏洞，应立即通知我们。因您保管不善导致的账号损失，由您自行承担。</p>
+            <h3 data-en="3.3 Login Security Mechanism">3.3 登录安全机制</h3>
+            <p data-en="To ensure account security, this Website employs the following security mechanisms:">为保障账号安全，本网站采用以下安全机制：</p>
+            <ul>
+                <li data-en="After 5 consecutive failed login attempts, the account will be temporarily locked for 3 minutes">连续5次登录失败，账号将被临时锁定3分钟</li>
+                <li data-en="The system may record login IP and device information for security auditing">系统可能记录登录IP、设备信息用于安全审计</li>
+                <li data-en="You may choose to bind an email for password recovery and security verification">您可选择绑定邮箱用于密码找回和安全验证</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-gavel"></i><span data-en="4. User Code of Conduct">4. 用户行为规范</span></h2>
+            <p data-en="When using this Website, you shall comply with the laws and regulations of the People's Republic of China, observe public order and good morals, and shall not engage in the following behaviors:">您在使用本网站时，应遵守中华人民共和国相关法律法规，遵守社会公序良俗，不得从事以下行为：</p>
+
+            <h3><span class="highlight" data-en="4.1 Prohibition of Sensitive Words and Prohibited Content">4.1 敏感词与违禁内容禁止</span></h3>
+            <div class="warn-box">
+                <p data-en-html="<i class=&quot;fas fa-ban&quot;></i> <strong>Strictly prohibited</strong> from including sensitive words, prohibited words, or harmful information in any content on this Website, including but not limited to:"><i class="fas fa-ban"></i> <strong>严格禁止</strong>在本网站的任何内容中包含敏感词、违禁词或不良信息，包括但不限于：</p>
+            </div>
+            <ul>
+                <li data-en-html="<strong>Politically sensitive</strong>: Content involving national leaders, political systems, sensitive historical events, separatism, subversion of state power, etc."><strong>政治敏感类</strong>：涉及国家领导人、政治制度、敏感历史事件、分裂国家、颠覆政权等内容</li>
+                <li data-en-html="<strong>Illegal and criminal</strong>: Content promoting terrorism, extremism, inciting crime, teaching criminal methods, involving firearms/explosives, drugs, etc."><strong>违法犯罪类</strong>：宣扬恐怖主义、极端主义、教唆犯罪、传授犯罪方法、涉枪涉爆、涉毒等内容</li>
+                <li data-en-html="<strong>Pornographic and vulgar</strong>: Pornographic, obscene, vulgar, sexually suggestive content that violates public order and good morals"><strong>色情低俗类</strong>：色情、淫秽、低俗、性暗示、违背社会公序良俗的内容</li>
+                <li data-en-html="<strong>Violent and gory</strong>: Content promoting violence, gore, cruelty, animal abuse, self-harm, suicide, etc."><strong>暴力血腥类</strong>：宣扬暴力、血腥、残忍、虐待动物、自残自杀等内容</li>
+                <li data-en-html="<strong>Discriminatory and hateful</strong>: Discriminatory, hateful, or insulting content targeting ethnicity, race, religion, gender, region, disability, etc."><strong>歧视仇恨类</strong>：针对民族、种族、宗教、性别、地域、残疾等的歧视、仇恨、侮辱内容</li>
+                <li data-en-html="<strong>Rumors and false information</strong>: Content spreading rumors, false information, misleading the public, disrupting social order"><strong>谣言虚假类</strong>：散布谣言、虚假信息、误导公众、扰乱社会秩序的内容</li>
+                <li data-en-html="<strong>Infringing</strong>: Content infringing upon others' reputation, privacy, portrait rights, intellectual property, and other legitimate rights"><strong>侵权类</strong>：侵犯他人名誉权、隐私权、肖像权、知识产权等合法权益的内容</li>
+                <li data-en-html="<strong>Spam and advertising</strong>: Spam advertisements, malicious promotion, spamming, repeatedly posting meaningless content"><strong>广告垃圾类</strong>：垃圾广告、恶意推广、刷屏、重复发布无意义内容</li>
+                <li data-en-html="<strong>Other prohibited</strong>: Other content that violates laws, regulations, social morality, or is deemed inappropriate by this Website"><strong>其他违禁类</strong>：其他违反法律法规、社会公德或本网站认为不适宜的内容</li>
+            </ul>
+            <p data-en="This Website reserves the right to conduct sensitive word detection and review of user-published content. For information containing sensitive words or prohibited content, we reserve the right to immediately delete or block it, and take measures such as warnings, feature restrictions, account bans, etc., depending on the severity of the circumstances.">本网站有权对用户发布的内容进行敏感词检测和审核。对于包含敏感词或违禁内容的信息，我们有权立即删除、屏蔽，并视情节严重程度采取警告、限制功能、封禁账号等措施。</p>
+
+            <h3 data-en="4.2 Other Prohibited Behaviors">4.2 其他禁止行为</h3>
+            <ul>
+                <li data-en="Use this Website to engage in any illegal or criminal activities">利用本网站从事任何违法犯罪活动</li>
+                <li data-en="Interfere with or disrupt the normal operation of this Website, attack Website servers or networks">干扰、破坏本网站的正常运行，攻击网站服务器或网络</li>
+                <li data-en="Access others' accounts without authorization, steal others' information">未经授权访问他人账号、窃取他人信息</li>
+                <li data-en="Exploit system vulnerabilities for cheating, score manipulation, or undermining game fairness">利用系统漏洞进行作弊、刷分、破坏游戏公平性</li>
+                <li data-en="Impersonate others or fabricate identity for fraud">冒充他人或虚构身份进行欺诈</li>
+                <li data-en="Distribute malware, viruses, trojans, or other harmful programs">传播恶意软件、病毒、木马等有害程序</li>
+                <li data-en="Other behaviors that violate laws, regulations, or this Agreement">其他违反法律法规或本协议的行为</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-comment-dots"></i><span data-en="5. User Content">5. 用户内容</span></h2>
+            <h3 data-en="5.1 Content Publishing">5.1 内容发布</h3>
+            <p data-en="You shall bear full responsibility for content you publish on this Website (including but not limited to VLOGs, comments, messages, feedback, in-game text, etc.). You warrant that the published content does not infringe upon the legitimate rights of any third party and does not violate laws, regulations, or this Agreement.">您在本网站发布的内容（包括但不限于VLOG、评论、留言、反馈、游戏内文字等），由您本人承担全部责任。您保证发布的内容不侵犯任何第三方的合法权益，不违反法律法规和本协议。</p>
+            <h3 data-en="5.2 Content License">5.2 内容授权</h3>
+            <p data-en="By publishing content on this Website, you grant us a free, non-exclusive, worldwide, sublicensable license to use, copy, modify, distribute, and display your published content on this Website and related services, for the purpose of Website operation and service provision.">您在本网站发布内容，即授予我们一项免费的、非独占的、全球范围的、可转授权的许可，允许我们在本网站及相关服务中使用、复制、修改、传播、展示您发布的内容，用于网站运营和服务提供之目的。</p>
+            <h3 data-en="5.3 Content Review and Handling">5.3 内容审核与处理</h3>
+            <p data-en="We reserve the right to review user-published content, but do not assume an obligation for real-time review. For content that violates this Agreement or laws and regulations, we reserve the right to delete or block it at any time without prior notice.">我们有权对用户发布的内容进行审核，但不承担实时审核的义务。对于违反本协议或法律法规的内容，我们有权随时删除、屏蔽，且无需事先通知。</p>
+            <p data-en="Any disputes, claims, or legal liabilities arising from content you publish shall be borne by you and shall be unrelated to this Website.">因您发布的内容引发的任何纠纷、索赔或法律责任，由您自行承担，与本网站无关。</p>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-gamepad"></i><span data-en="6. Game Service Terms">6. 游戏服务条款</span></h2>
+            <h3 data-en="6.1 Game Rules">6.1 游戏规则</h3>
+            <p data-en="For online games provided by this Website (including but not limited to Dou Dizhu, Snake, Beast Chess, etc.), you shall comply with the specific rules of each game. Game rules are as published within the games.">本网站提供的在线游戏（包括但不限于斗地主、贪吃蛇、斗兽棋等），您应遵守各游戏的具体规则。游戏规则以游戏内公布的为准。</p>
+            <h3 data-en="6.2 Fair Play">6.2 公平游戏</h3>
+            <p data-en="You undertake that in games you will:">您承诺在游戏中：</p>
+            <ul>
+                <li data-en="Not use cheats, cheating software, scripts, or other tools that undermine game fairness">不使用外挂、作弊软件、脚本等破坏游戏公平性的工具</li>
+                <li data-en="Not exploit game vulnerabilities to obtain improper benefits">不利用游戏漏洞获取不正当利益</li>
+                <li data-en="Not engage in malicious idling, passive play, intentional score loss, or similar behaviors">不进行恶意挂机、消极游戏、故意输分等行为</li>
+                <li data-en="Not publish sensitive words, insults, or harassment of other players in games">不在游戏中发布敏感词、辱骂、骚扰其他玩家</li>
+            </ul>
+            <h3 data-en="6.3 Game Data">6.3 游戏数据</h3>
+            <p data-en="Game data (including points, levels, items, room records, etc.) belongs to this Website. We reserve the right to adjust game data, reset game progress, or terminate game services based on operational needs, without assuming liability for compensation.">游戏数据（包括积分、等级、道具、房间记录等）归本网站所有。我们有权根据运营需要调整游戏数据、重置游戏进度或终止游戏服务，且无需承担赔偿责任。</p>
+            <h3 data-en="6.4 Room Management">6.4 房间管理</h3>
+            <p data-en="The creator of a game room (room owner) has the right to manage the room, including kicking players, dissolving the room, etc. The room owner exiting the room will cause the room to dissolve. When other players exit the room, the system may replace them with AI players to ensure the game continues.">游戏房间创建者（房主）有权管理房间，包括踢出玩家、解散房间等。房主退出房间将导致房间解散。其他玩家退出房间时，系统可能以AI玩家接替以保证游戏继续进行。</p>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-lock"></i><span data-en="7. Privacy Policy">7. 隐私政策</span></h2>
+            <p data-en="We value your privacy protection. When you use this Website, we may collect the following information:">我们重视您的隐私保护。您在使用本网站时，我们可能收集以下信息：</p>
+            <ul>
+                <li data-en-html="<strong>Account information</strong>: Username, email, password (encrypted storage)"><strong>账号信息</strong>：用户名、邮箱、密码（加密存储）</li>
+                <li data-en-html="<strong>Usage information</strong>: Browsing records, game records, VLOG publishing records"><strong>使用信息</strong>：浏览记录、游戏记录、VLOG发布记录</li>
+                <li data-en-html="<strong>Device information</strong>: IP address, browser type, operating system, device model"><strong>设备信息</strong>：IP地址、浏览器类型、操作系统、设备型号</li>
+                <li data-en-html="<strong>Log information</strong>: Login time, operation logs, error logs"><strong>日志信息</strong>：登录时间、操作日志、错误日志</li>
+            </ul>
+            <p data-en="We will take reasonable security measures to protect your personal information and will not sell or illegally provide your personal information to third parties, except in the following circumstances:">我们将采取合理的安全措施保护您的个人信息，不会向第三方出售或非法提供您的个人信息，但以下情况除外：</p>
+            <ul>
+                <li data-en="With your explicit consent">获得您的明确同意</li>
+                <li data-en="As required by laws and regulations or legitimate requests from judicial or administrative authorities">根据法律法规要求或司法机关、行政机关的合法要求</li>
+                <li data-en="To protect the legitimate rights and interests of this Website and users">为维护本网站及用户的合法权益</li>
+                <li data-en="In the event of mergers, acquisitions, or other asset restructurings">在合并、收购等资产重组情况下</li>
+            </ul>
+            <p data-en="For more details on privacy protection, please refer to our Privacy Policy.">更多隐私保护细节请参考我们的《隐私政策》。</p>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-envelope"></i><span data-en="8. Email Service">8. 邮件服务</span></h2>
+            <p data-en="After you bind your email, we may send you the following types of emails:">您在绑定邮箱后，我们可能向您发送以下类型的邮件：</p>
+            <ul>
+                <li data-en-html="<strong>Security notifications</strong>: Login anomalies, password changes, account security alerts"><strong>安全通知</strong>：登录异常、密码修改、账号安全提醒</li>
+                <li data-en-html="<strong>Service notifications</strong>: Game match completion, system maintenance notices, feature updates"><strong>服务通知</strong>：游戏匹配完成、系统维护通知、功能更新</li>
+                <li data-en-html="<strong>Feedback replies</strong>: Processing results of feedback you submitted"><strong>反馈回复</strong>：您提交的反馈的处理结果</li>
+            </ul>
+            <p data-en="We will not send you spam or unauthorized commercial promotional emails. You may unsubscribe from relevant email subscriptions at any time through the unsubscribe link in the email or by contacting us.">我们不会向您发送垃圾邮件或未经授权的商业推广邮件。您可随时通过邮件中的退订链接或联系我们取消相关邮件订阅。</p>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-exclamation-circle"></i><span data-en="9. Disclaimer">9. 免责声明</span></h2>
+            <p data-en="This Website provides services on an &quot;as is&quot; and &quot;as available&quot; basis. To the maximum extent permitted by law, we make no express or implied warranties, including but not limited to:">本网站按"现状"和"可用"基础提供服务，在法律允许的最大范围内，我们不作任何明示或暗示的保证，包括但不限于：</p>
+            <ul>
+                <li data-en="Timeliness, security, accuracy, or completeness of services">服务的及时性、安全性、准确性、完整性</li>
+                <li data-en="That services will be uninterrupted or error-free">服务不会中断或无错误</li>
+                <li data-en="That service results will meet your expectations">服务结果满足您的期望</li>
+                <li data-en="That Website servers are free of viruses or other harmful programs">网站服务器无病毒或其他有害程序</li>
+            </ul>
+            <p data-en="We shall not be liable for service interruptions or data loss caused by:">因以下原因导致的服务中断或数据丢失，我们不承担责任：</p>
+            <ul>
+                <li data-en="Force majeure (natural disasters, war, government actions, etc.)">不可抗力（自然灾害、战争、政府行为等）</li>
+                <li data-en="Network failures, server maintenance, system upgrades">网络故障、服务器维护、系统升级</li>
+                <li data-en="Your own device failures, network issues, improper operations">您自身的设备故障、网络问题、操作不当</li>
+                <li data-en="Third-party service interruptions or failures">第三方服务中断或故障</li>
+                <li data-en="Hacking attacks, virus infections, or other security events not attributable to our fault">黑客攻击、病毒感染等非我们过错的安全事件</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-balance-scale"></i><span data-en="10. Limitation of Liability">10. 责任限制</span></h2>
+            <p data-en="To the maximum extent permitted by law, we shall not be liable for any direct, indirect, incidental, special, punitive, or consequential damages (including but not limited to lost profits, data loss, business interruption, goodwill damage, etc.) you suffer as a result of using this Website, even if we have been advised of the possibility of such damages.">在法律允许的最大范围内，我们对您因使用本网站而遭受的任何直接、间接、附带、特殊、惩罚性或后果性损害（包括但不限于利润损失、数据丢失、业务中断、商誉损害等）不承担责任，即使我们已被告知可能发生此类损害。</p>
+            <p data-en="Our total liability to you, regardless of the cause, shall not exceed the total amount of fees you paid to us for using this Website in the past 12 months (if any).">我们对您承担的全部责任，无论因何原因，均不超过您在过去12个月内因使用本网站而向我们支付的费用总额（如有）。</p>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-user-slash"></i><span data-en="11. Breach Handling and Account Termination">11. 违约处理与账号终止</span></h2>
+            <h3 data-en="11.1 Breach Handling">11.1 违约处理</h3>
+            <p data-en="If you violate this Agreement, we reserve the right to take one or more of the following measures depending on the severity of the circumstances:">如果您违反本协议，我们有权根据情节严重程度采取以下一种或多种措施：</p>
+            <ul>
+                <li data-en="Warning and requiring correction">警告并要求改正</li>
+                <li data-en="Deletion of violating content">删除违规内容</li>
+                <li data-en="Restriction of certain features (e.g., muting, game ban)">限制部分功能（如禁止发言、禁止游戏）</li>
+                <li data-en="Temporary account ban">临时封禁账号</li>
+                <li data-en="Permanent account ban">永久封禁账号</li>
+                <li data-en="Pursuit of legal liability">追究法律责任</li>
+            </ul>
+            <h3 data-en="11.2 Account Cancellation">11.2 账号注销</h3>
+            <p data-en="You have the right to cancel your account at any time. After account cancellation, your personal information will be deleted or anonymized, except as required by laws and regulations. Account cancellation is irreversible, please proceed with caution.">您有权随时注销您的账号。账号注销后，您的个人信息将被删除或匿名化处理，但法律法规要求保留的除外。账号注销不可恢复，请谨慎操作。</p>
+            <h3 data-en="11.3 Service Termination">11.3 服务终止</h3>
+            <p data-en="We reserve the right to terminate or suspend all or part of the services of this Website at any time based on business development needs, without prior notice or assuming liability for compensation. After service termination, your account and related data may be deleted.">我们有权根据业务发展需要，随时终止或暂停本网站的全部或部分服务，且无需提前通知或承担赔偿责任。服务终止后，您的账号和相关数据可能被删除。</p>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-edit"></i><span data-en="12. Agreement Modification">12. 协议修改</span></h2>
+            <p data-en="We reserve the right to modify this Agreement at any time based on changes in laws and regulations, business development needs, or other reasonable reasons. The modified Agreement will be published on this Website and shall take effect from the date of publication.">我们有权根据法律法规变化、业务发展需要或其他合理原因，随时修改本协议。修改后的协议将在本网站公布，自公布之日起生效。</p>
+            <p data-en="Your continued use of this Website after the Agreement modification indicates your agreement to accept the modified Agreement. If you do not agree with the modified Agreement, please stop using this Website.">您在协议修改后继续使用本网站，即表示您同意接受修改后的协议。如果您不同意修改后的协议，请停止使用本网站。</p>
+            <p data-en="For material modifications, we will notify you through Website announcements, emails, or other means.">对于重大修改，我们将通过网站公告、邮件等方式通知您。</p>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-landmark"></i><span data-en="13. Governing Law and Dispute Resolution">13. 适用法律与争议解决</span></h2>
+            <h3 data-en="13.1 Governing Law">13.1 适用法律</h3>
+            <p data-en="The formation, execution, interpretation, and dispute resolution of this Agreement shall be governed by the laws of the People's Republic of China (excluding the laws of the Hong Kong Special Administrative Region, Macao Special Administrative Region, and Taiwan region).">本协议的订立、执行、解释及争议解决均适用中华人民共和国法律（不含香港特别行政区、澳门特别行政区和台湾地区法律）。</p>
+            <h3 data-en="13.2 Dispute Resolution">13.2 争议解决</h3>
+            <p data-en="Any dispute arising from or in connection with this Agreement shall first be resolved through friendly negotiation between the parties. If negotiation fails, either party shall have the right to file a lawsuit with the people's court with jurisdiction at the location of the Website operator.">因本协议引起的或与本协议有关的任何争议，双方应首先通过友好协商解决。协商不成的，任何一方均有权向本网站运营方所在地有管辖权的人民法院提起诉讼。</p>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-address-card"></i><span data-en="14. Contact Us">14. 联系我们</span></h2>
+            <p data-en="If you have any questions, comments, or suggestions regarding this Agreement, you may contact us through:">如果您对本协议有任何疑问、意见或建议，可通过以下方式联系我们：</p>
+            <ul>
+                <li data-en-html="<strong>Website Feedback</strong>: Submit through the feedback page on this Website"><strong>网站反馈</strong>：通过本网站的反馈页面提交</li>
+                <li data-en-html="<strong>Email</strong>: admin@slexion.com"><strong>邮箱</strong>：admin@slexion.com</li>
+                <li data-en-html="<strong>Website Address</strong>: https://slexion.com"><strong>网站地址</strong>：https://slexion.com</li>
+            </ul>
+            <p data-en="We will reply as soon as possible after receiving your feedback.">我们将在收到您的反馈后尽快回复。</p>
+        </div>
+
+        <div class="glitch-line"></div>
+
+        <div class="card" style="border-left-color:#f0f;">
+            <h2><i class="fas fa-check-circle"></i><span data-en="Agreement Confirmation">协议确认</span></h2>
+            <p data-en="You have read and understood the entire content of this Agreement, especially the terms marked in bold or red. You agree to all terms of this Agreement and undertake to comply with relevant laws, regulations, and this Agreement when using this Website.">您已阅读并理解本协议的全部内容，特别是以加粗或红色标注的条款。您同意本协议的全部条款，并承诺在使用本网站时遵守相关法律法规和本协议。</p>
+            <p data-en="If you have any questions, please consult us through the above contact information before using this Website.">如果您有任何疑问，请在使用本网站前通过上述联系方式咨询我们。</p>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2026 Slexion. All Rights Reserved.</p>
+            <p style="margin-top:8px;"><a href="/" data-en="Back to Home">返回首页</a> | <a href="/feedback/feedback.html" data-en="Feedback">意见反馈</a></p>
+        </div>
+    </div>
+
+    <script src="/navbar.js"></script>
+    <script src="/i18n.js"></script>
+    <script src="/account.js"></script>
+</body>
+</html>

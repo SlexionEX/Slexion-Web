@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>2048 无限模式 | Slexion</title>
+    <link rel="icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/littlegames/2048/style.css">
+</head>
+<body>
+    <div class="blobs"></div>
+
+    <div class="game-container">
+        <div class="game-header">
+            <h1 class="game-title" data-en="2048 Infinite">2048 <span class="infinite-tag" data-en="Infinite">无限模式</span></h1>
+            <div class="scores">
+                <div class="score-box">
+                    <div class="score-label" data-en="Score">分数</div>
+                    <div class="score-value" id="score">0</div>
+                </div>
+                <div class="score-box best">
+                    <div class="score-label" data-en="Best">最高分</div>
+                    <div class="score-value" id="best">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-controls">
+            <div class="control-group">
+                <label class="control-label" data-en="Rows">行</label>
+                <input type="number" class="size-input" id="rows-input" value="4" min="3" max="20" placeholder="3-20">
+                <label class="control-label" data-en="Cols">列</label>
+                <input type="number" class="size-input" id="cols-input" value="4" min="3" max="20" placeholder="3-20">
+            </div>
+            <button class="game-btn primary" id="new-game" data-en="New Game">新游戏</button>
+        </div>
+
+        <div class="game-tip" data-en="Use arrow keys or swipe to move">使用方向键或滑动屏幕移动方块</div>
+
+        <div class="board-wrapper">
+            <div class="board" id="board">
+                <div class="grid-bg" id="grid-bg"></div>
+                <div class="tiles" id="tiles"></div>
+            </div>
+
+            <div class="game-overlay" id="game-over" style="display:none;">
+                <div class="overlay-content">
+                    <h2 data-en="Game Over">游戏结束</h2>
+                    <p data-en="Final Score">最终分数</p>
+                    <div class="final-score" id="final-score">0</div>
+                    <button class="game-btn primary" id="retry-btn" data-en="Try Again">再来一局</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-info">
+            <p data-en="Combine same numbers! Custom board size 3~20, infinite mode!">合并相同数字！自定义棋盘大小3~20，无限模式！</p>
+            <p class="login-tip" id="login-tip" style="display:none;color:#ffcc00;" data-en="Login to save your best score!">登录后可保存最高分到服务器！</p>
+        </div>
+    </div>
+
+    <script src="/navbar.js"></script>
+    <script src="/i18n.js"></script>
+    <script src="/account.js"></script>
+    <script src="/littlegames/2048/game.js"></script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title data-en="Feedback | Slexion">反馈 | Slexion</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #050118 url("/pic/cyberbg.png") no-repeat center center fixed;
+            background-size: cover;
+            color: #e0e0e0;
+            font-family: monospace;
+            min-height: 100vh;
+            position: relative;
+        }
+        /* ===== Liquid Glass 背景彩色光晕 ===== */
+        .blobs{
+            position:fixed;
+            inset:-10%;
+            z-index:0;
+            pointer-events:none;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(0,255,255,0.30), transparent 42%),
+                radial-gradient(circle at 85% 25%, rgba(255,0,255,0.26), transparent 42%),
+                radial-gradient(circle at 50% 85%, rgba(60,110,255,0.32), transparent 45%),
+                radial-gradient(circle at 90% 80%, rgba(140,60,255,0.24), transparent 40%);
+            filter:blur(22px);
+            animation:blobFloat 16s ease-in-out infinite alternate;
+        }
+        @keyframes blobFloat{
+            0%{transform:translate(0,0) scale(1);}
+            100%{transform:translate(3%,2%) scale(1.06);}
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .cyber-title {
+            font-size: 48px;
+            color: #0ff;
+            text-shadow: 0 0 10px #0ff, 0 0 20px #f0f;
+            margin-bottom: 30px;
+        }
+        .feedback-card {
+            background: rgba(255,255,255,0.05);
+            -webkit-backdrop-filter: blur(18px) saturate(180%) brightness(1.12);
+            backdrop-filter: blur(18px) saturate(180%) brightness(1.12);
+            border: 1px solid rgba(255,255,255,0.14);
+            border-left: 4px solid #0ff;
+            border-right: 1px solid rgba(255,0,255,0.25);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.08), 0 0 15px rgba(0,255,255,0.2), 0 12px 32px rgba(0,0,0,0.4);
+            padding: 30px;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        .feedback-card::before{
+            content:"";
+            position:absolute;
+            top:0;left:0;right:0;height:45%;
+            background:linear-gradient(180deg,rgba(255,255,255,0.09),transparent);
+            pointer-events:none;
+        }
+        .cyber-input {
+            width: 100%;
+            background: #10102a;
+            border: 2px solid #0ff;
+            color: #fff;
+            padding: 14px;
+            margin: 12px 0;
+            font-size: 16px;
+            font-family: monospace;
+            outline: none;
+        }
+        .cyber-textarea {
+            height: 200px;
+            resize: none;
+        }
+        .cyber-btn {
+            background: #0ff;
+            color: #000;
+            padding: 14px 30px;
+            border: none;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 0 12px #0ff;
+            transition: 0.3s;
+        }
+        .cyber-btn:hover {
+            background: #fff;
+            box-shadow: 0 0 20px #0ff, 0 0 30px #f0f;
+        }
+        .cyber-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .tip {
+            color: #0ff;
+            margin-top: 20px;
+            text-shadow: 0 0 5px #0ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="blobs"></div>
+
+    <div class="container">
+        <h1 class="cyber-title">USER FEEDBACK</h1>
+        <div class="feedback-card">
+            <input type="text" class="cyber-input" id="name" placeholder="你的昵称（可选）" data-en-ph="Your nickname (optional)">
+            <textarea class="cyber-input cyber-textarea" id="content" placeholder="请输入反馈内容..." data-en-ph="Enter your feedback..."></textarea>
+            <button class="cyber-btn" onclick="sendFeed()" data-en="Send Feedback">发送反馈</button>
+        </div>
+        <p class="tip" data-en="Feedback will be sent to: SlexionEX@outlook.com">反馈将发送至：SlexionEX@outlook.com</p>
+    </div>
+
+<script>
+async function sendFeed(){
+    let name = document.getElementById('name').value.trim();
+    let content = document.getElementById('content').value.trim();
+    let T = window.I18N ? I18N.t.bind(I18N) : (z)=>z;
+    let btn = document.querySelector('.cyber-btn');
+
+    if(!content){
+        alert(T('请输入反馈内容','Please enter your feedback'));
+        return;
+    }
+
+    btn.disabled = true;
+    let originalText = btn.textContent;
+    btn.textContent = T('提交中...','Submitting...');
+
+    try {
+        let formData = new FormData();
+        formData.append('name', name);
+        formData.append('content', content);
+        let res = await fetch('/feedback/submit.php', { method: 'POST', body: formData });
+        let data = await res.json();
+        if(data.success){
+            alert(T("✅ 反馈已成功发送！\n感谢你的反馈，我会尽快处理。","✅ Feedback sent successfully!\nThanks for your feedback, I'll handle it soon."));
+            document.getElementById('name').value = "";
+            document.getElementById('content').value = "";
+        } else {
+            alert(data.error || T('提交失败，请稍后重试','Submit failed, please try again'));
+        }
+    } catch(e) {
+        alert(T('网络错误，请稍后重试','Network error, please try again'));
+    } finally {
+        btn.disabled = false;
+        btn.textContent = originalText;
+    }
+}
+</script>
+<script src="/navbar.js"></script>
+<script src="/account/auth.js"></script>
+<script src="/i18n.js"></script>
+<script src="/account.js"></script>
+</body>
+</html>

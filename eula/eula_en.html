@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="/favicon.ico">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EULA | Slexion</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{
+            background:#050118 url("/pic/cyberbg.png") no-repeat center center fixed;
+            background-size:cover;
+            color:#e0e0e0;
+            font-family:-apple-system,'Segoe UI',sans-serif;
+            position:relative;
+            min-height:100vh;
+        }
+        .blobs{
+            position:fixed;
+            inset:-10%;
+            z-index:0;
+            pointer-events:none;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(0,255,255,0.30), transparent 42%),
+                radial-gradient(circle at 85% 25%, rgba(255,0,255,0.26), transparent 42%),
+                radial-gradient(circle at 50% 85%, rgba(60,110,255,0.32), transparent 45%);
+            filter:blur(22px);
+        }
+        .container{
+            max-width:900px;
+            margin:0 auto;
+            padding:40px 20px 60px;
+            position:relative;
+            z-index:1;
+        }
+        .header{
+            text-align:center;
+            margin-bottom:40px;
+        }
+        .cyber-title{
+            font-size:42px;
+            color:#0ff;
+            text-shadow:0 0 10px #0ff,0 0 20px rgba(0,255,255,0.5);
+            letter-spacing:4px;
+            margin-bottom:10px;
+        }
+        .cyber-sub{
+            color:#aaa;
+            font-size:14px;
+        }
+        .glitch-line{
+            height:3px;
+            background:linear-gradient(90deg,transparent,#f0f,transparent);
+            margin:20px 0;
+            box-shadow:0 0 10px #f0f;
+        }
+        .card{
+            background:rgba(255,255,255,0.05);
+            -webkit-backdrop-filter:blur(18px) saturate(180%) brightness(1.12);
+            backdrop-filter:blur(18px) saturate(180%) brightness(1.12);
+            border:1px solid rgba(255,255,255,0.14);
+            border-left:4px solid #0ff;
+            box-shadow:inset 0 1px 0 rgba(255,255,255,0.28),0 12px 32px rgba(0,0,0,0.40);
+            padding:25px 30px;
+            margin:20px 0;
+            position:relative;
+            overflow:hidden;
+            border-radius:16px;
+        }
+        .card::before{
+            content:"";
+            position:absolute;
+            top:0;left:0;right:0;height:45%;
+            background:linear-gradient(180deg,rgba(255,255,255,0.09),transparent);
+            pointer-events:none;
+        }
+        .card h2{
+            color:#0ff;
+            font-size:20px;
+            margin-bottom:15px;
+            display:flex;
+            align-items:center;
+            gap:10px;
+        }
+        .card h2 i{
+            color:#f0f;
+        }
+        .card h3{
+            color:#f0f;
+            font-size:16px;
+            margin:15px 0 8px;
+        }
+        .card p{
+            line-height:1.8;
+            margin-bottom:10px;
+            color:#ccc;
+            font-size:14px;
+        }
+        .card ul{
+            margin:10px 0 10px 20px;
+        }
+        .card li{
+            line-height:1.8;
+            margin-bottom:6px;
+            color:#ccc;
+            font-size:14px;
+        }
+        .highlight{
+            color:#ff6b6b;
+            font-weight:bold;
+        }
+        .warn-box{
+            background:rgba(255,107,107,0.1);
+            border:1px solid rgba(255,107,107,0.3);
+            border-left:4px solid #ff6b6b;
+            border-radius:8px;
+            padding:15px 20px;
+            margin:15px 0;
+        }
+        .warn-box p{
+            color:#ff9999;
+            margin:0;
+        }
+        .footer{
+            text-align:center;
+            margin-top:40px;
+            padding-top:20px;
+            border-top:1px solid rgba(255,255,255,0.1);
+            color:#666;
+            font-size:12px;
+        }
+        .footer a{
+            color:#0ff;
+            text-decoration:none;
+        }
+        .last-updated{
+            text-align:center;
+            color:#888;
+            font-size:13px;
+            margin-bottom:30px;
+        }
+        .lang-switch{
+            text-align:center;
+            margin-bottom:20px;
+        }
+        .lang-switch a{
+            color:#0ff;
+            text-decoration:none;
+            font-size:14px;
+            border:1px solid rgba(0,255,255,0.3);
+            padding:6px 16px;
+            border-radius:20px;
+            transition:all .2s;
+        }
+        .lang-switch a:hover{
+            background:rgba(0,255,255,0.1);
+        }
+        @media (max-width:600px){
+            .cyber-title{font-size:28px;}
+            .card{padding:20px;}
+            .card h2{font-size:17px;}
+        }
+    </style>
+</head>
+<body>
+    <div class="blobs"></div>
+    <div class="container">
+        <div class="header">
+            <h1 class="cyber-title">EULA</h1>
+            <p class="cyber-sub">End User License Agreement</p>
+        </div>
+        <div class="lang-switch">
+            <a href="/eula/eula.html">中文</a>
+        </div>
+        <div class="glitch-line"></div>
+        <p class="last-updated">Last Updated: September 4, 2026 | Effective Date: September 4, 2026</p>
+
+        <div class="card">
+            <h2><i class="fas fa-file-contract"></i>1. Acceptance of Agreement</h2>
+            <p>Welcome to Slexion (hereinafter referred to as "this Website", "we", "us"). Before using any service provided by this Website (including but not limited to web browsing, account registration, online games, VLOG publishing, feedback submission, etc.), please carefully read the entire content of this End User License Agreement (hereinafter referred to as "this Agreement").</p>
+            <p>By accessing, browsing, or using any service of this Website, you indicate that you have read, understood, and agreed to accept all terms of this Agreement. If you do not agree with any term of this Agreement, please stop using this Website immediately.</p>
+            <div class="warn-box">
+                <p><i class="fas fa-exclamation-triangle"></i> Minor Notice: If you are under 18 years of age, please read this Agreement in the company of your legal guardian and use this Website only after obtaining guardian consent.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-copyright"></i>2. Intellectual Property</h2>
+            <h3>2.1 Ownership of Website Content</h3>
+            <p>All content contained on this Website, including but not limited to text, images, audio, video, graphics, interface design, web code, game code, trademarks, logos, domain names, etc., is the intellectual property of Slexion or the relevant rights holders. The Website code is open source under the MIT License. You may freely use, copy, modify, and distribute it in compliance with the MIT License.</p>
+            <h3>2.2 Usage Restrictions</h3>
+            <p>When using this Website, you shall not:</p>
+            <ul>
+                <li>Remove or alter copyright notices, MIT License notices, or other proprietary notices in the Website content</li>
+                <li>Use crawlers, bots, or other automated tools to maliciously bulk-fetch Website content or interfere with normal Website operation</li>
+                <li>Conduct malicious attacks, inject malicious code, or exploit vulnerabilities to disrupt services</li>
+                <li>Use the Website's trademarks or logos in a misleading manner (implying official affiliation with Slexion)</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-user-shield"></i>3. Account Registration and Use</h2>
+            <h3>3.1 Registration Requirements</h3>
+            <p>When registering for a Slexion Account, you undertake to:</p>
+            <ul>
+                <li>Provide true, accurate, and complete registration information (including username, email, etc.)</li>
+                <li>Promptly update registration information to maintain its accuracy</li>
+                <li>Have full civil capacity, or have obtained guardian consent</li>
+                <li>Your registered username shall not infringe upon the legitimate rights of others, nor contain illegal or harmful information</li>
+            </ul>
+            <h3>3.2 Account Security</h3>
+            <p>You shall properly safeguard your account password and be responsible for all activities conducted under your account. If you discover that your account has been compromised or there is a security vulnerability, you shall notify us immediately. Any account losses resulting from your failure to properly safeguard your account shall be borne by you.</p>
+            <h3>3.3 Login Security Mechanism</h3>
+            <p>To ensure account security, this Website employs the following security mechanisms:</p>
+            <ul>
+                <li>After 5 consecutive failed login attempts, the account will be temporarily locked for 3 minutes</li>
+                <li>The system may record login IP and device information for security auditing</li>
+                <li>You may choose to bind an email for password recovery and security verification</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-gavel"></i>4. User Code of Conduct</h2>
+            <p>When using this Website, you shall comply with the laws and regulations of the People's Republic of China, observe public order and good morals, and shall not engage in the following behaviors:</p>
+
+            <h3>4.1 <span class="highlight">Prohibition of Sensitive Words and Prohibited Content</span></h3>
+            <div class="warn-box">
+                <p><i class="fas fa-ban"></i> <strong>Strictly prohibited</strong> from including sensitive words, prohibited words, or harmful information in any content on this Website, including but not limited to:</p>
+            </div>
+            <ul>
+                <li><strong>Politically sensitive</strong>: Content involving national leaders, political systems, sensitive historical events, separatism, subversion of state power, etc.</li>
+                <li><strong>Illegal and criminal</strong>: Content promoting terrorism, extremism, inciting crime, teaching criminal methods, involving firearms/explosives, drugs, etc.</li>
+                <li><strong>Pornographic and vulgar</strong>: Pornographic, obscene, vulgar, sexually suggestive content that violates public order and good morals</li>
+                <li><strong>Violent and gory</strong>: Content promoting violence, gore, cruelty, animal abuse, self-harm, suicide, etc.</li>
+                <li><strong>Discriminatory and hateful</strong>: Discriminatory, hateful, or insulting content targeting ethnicity, race, religion, gender, region, disability, etc.</li>
+                <li><strong>Rumors and false information</strong>: Content spreading rumors, false information, misleading the public, disrupting social order</li>
+                <li><strong>Infringing</strong>: Content infringing upon others' reputation, privacy, portrait rights, intellectual property, and other legitimate rights</li>
+                <li><strong>Spam and advertising</strong>: Spam advertisements, malicious promotion,刷屏, repeatedly posting meaningless content</li>
+                <li><strong>Other prohibited</strong>: Other content that violates laws, regulations, social morality, or is deemed inappropriate by this Website</li>
+            </ul>
+            <p>This Website reserves the right to conduct sensitive word detection and review of user-published content. For information containing sensitive words or prohibited content, we reserve the right to immediately delete or block it, and take measures such as warnings, feature restrictions, account bans, etc., depending on the severity of the circumstances.</p>
+
+            <h3>4.2 Other Prohibited Behaviors</h3>
+            <ul>
+                <li>Use this Website to engage in any illegal or criminal activities</li>
+                <li>Interfere with or disrupt the normal operation of this Website, attack Website servers or networks</li>
+                <li>Access others' accounts without authorization, steal others' information</li>
+                <li>Exploit system vulnerabilities for cheating, score manipulation, or undermining game fairness</li>
+                <li>Impersonate others or fabricate identity for fraud</li>
+                <li>Distribute malware, viruses, trojans, or other harmful programs</li>
+                <li>Other behaviors that violate laws, regulations, or this Agreement</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-comment-dots"></i>5. User Content</h2>
+            <h3>5.1 Content Publishing</h3>
+            <p>You shall bear full responsibility for content you publish on this Website (including but not limited to VLOGs, comments, messages, feedback, in-game text, etc.). You warrant that the published content does not infringe upon the legitimate rights of any third party and does not violate laws, regulations, or this Agreement.</p>
+            <h3>5.2 Content License</h3>
+            <p>By publishing content on this Website, you grant us a free, non-exclusive, worldwide, sublicensable license to use, copy, modify, distribute, and display your published content on this Website and related services, for the purpose of Website operation and service provision.</p>
+            <h3>5.3 Content Review and Handling</h3>
+            <p>We reserve the right to review user-published content, but do not assume an obligation for real-time review. For content that violates this Agreement or laws and regulations, we reserve the right to delete or block it at any time without prior notice.</p>
+            <p>Any disputes, claims, or legal liabilities arising from content you publish shall be borne by you and shall be unrelated to this Website.</p>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-gamepad"></i>6. Game Service Terms</h2>
+            <h3>6.1 Game Rules</h3>
+            <p>For online games provided by this Website (including but not limited to Dou Dizhu, Snake, Beast Chess, etc.), you shall comply with the specific rules of each game. Game rules are as published within the games.</p>
+            <h3>6.2 Fair Play</h3>
+            <p>You undertake that in games you will:</p>
+            <ul>
+                <li>Not use cheats, cheating software, scripts, or other tools that undermine game fairness</li>
+                <li>Not exploit game vulnerabilities to obtain improper benefits</li>
+                <li>Not engage in malicious idling, passive play, intentional score loss, or similar behaviors</li>
+                <li>Not publish sensitive words, insults, or harassment of other players in games</li>
+            </ul>
+            <h3>6.3 Game Data</h3>
+            <p>Game data (including points, levels, items, room records, etc.) belongs to this Website. We reserve the right to adjust game data, reset game progress, or terminate game services based on operational needs, without assuming liability for compensation.</p>
+            <h3>6.4 Room Management</h3>
+            <p>The creator of a game room (room owner) has the right to manage the room, including kicking players, dissolving the room, etc. The room owner exiting the room will cause the room to dissolve. When other players exit the room, the system may replace them with AI players to ensure the game continues.</p>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-lock"></i>7. Privacy Policy</h2>
+            <p>We value your privacy protection. When you use this Website, we may collect the following information:</p>
+            <ul>
+                <li><strong>Account information</strong>: Username, email, password (encrypted storage)</li>
+                <li><strong>Usage information</strong>: Browsing records, game records, VLOG publishing records</li>
+                <li><strong>Device information</strong>: IP address, browser type, operating system, device model</li>
+                <li><strong>Log information</strong>: Login time, operation logs, error logs</li>
+            </ul>
+            <p>We will take reasonable security measures to protect your personal information and will not sell or illegally provide your personal information to third parties, except in the following circumstances:</p>
+            <ul>
+                <li>With your explicit consent</li>
+                <li>As required by laws and regulations or legitimate requests from judicial or administrative authorities</li>
+                <li>To protect the legitimate rights and interests of this Website and users</li>
+                <li>In the event of mergers, acquisitions, or other asset restructurings</li>
+            </ul>
+            <p>For more details on privacy protection, please refer to our Privacy Policy.</p>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-envelope"></i>8. Email Service</h2>
+            <p>After you bind your email, we may send you the following types of emails:</p>
+            <ul>
+                <li><strong>Security notifications</strong>: Login anomalies, password changes, account security alerts</li>
+                <li><strong>Service notifications</strong>: Game match completion, system maintenance notices, feature updates</li>
+                <li><strong>Feedback replies</strong>: Processing results of feedback you submitted</li>
+            </ul>
+            <p>We will not send you spam or unauthorized commercial promotional emails. You may unsubscribe from relevant email subscriptions at any time through the unsubscribe link in the email or by contacting us.</p>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-exclamation-circle"></i>9. Disclaimer</h2>
+            <p>This Website provides services on an "as is" and "as available" basis. To the maximum extent permitted by law, we make no express or implied warranties, including but not limited to:</p>
+            <ul>
+                <li>Timeliness, security, accuracy, or completeness of services</li>
+                <li>That services will be uninterrupted or error-free</li>
+                <li>That service results will meet your expectations</li>
+                <li>That Website servers are free of viruses or other harmful programs</li>
+            </ul>
+            <p>We shall not be liable for service interruptions or data loss caused by:</p>
+            <ul>
+                <li>Force majeure (natural disasters, war, government actions, etc.)</li>
+                <li>Network failures, server maintenance, system upgrades</li>
+                <li>Your own device failures, network issues, improper operations</li>
+                <li>Third-party service interruptions or failures</li>
+                <li>Hacking attacks, virus infections, or other security events not attributable to our fault</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-balance-scale"></i>10. Limitation of Liability</h2>
+            <p>To the maximum extent permitted by law, we shall not be liable for any direct, indirect, incidental, special, punitive, or consequential damages (including but not limited to lost profits, data loss, business interruption, goodwill damage, etc.) you suffer as a result of using this Website, even if we have been advised of the possibility of such damages.</p>
+            <p>Our total liability to you, regardless of the cause, shall not exceed the total amount of fees you paid to us for using this Website in the past 12 months (if any).</p>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-user-slash"></i>11. Breach Handling and Account Termination</h2>
+            <h3>11.1 Breach Handling</h3>
+            <p>If you violate this Agreement, we reserve the right to take one or more of the following measures depending on the severity of the circumstances:</p>
+            <ul>
+                <li>Warning and requiring correction</li>
+                <li>Deletion of violating content</li>
+                <li>Restriction of certain features (e.g., muting, game ban)</li>
+                <li>Temporary account ban</li>
+                <li>Permanent account ban</li>
+                <li>Pursuit of legal liability</li>
+            </ul>
+            <h3>11.2 Account Cancellation</h3>
+            <p>You have the right to cancel your account at any time. After account cancellation, your personal information will be deleted or anonymized, except as required by laws and regulations. Account cancellation is irreversible, please proceed with caution.</p>
+            <h3>11.3 Service Termination</h3>
+            <p>We reserve the right to terminate or suspend all or part of the services of this Website at any time based on business development needs, without prior notice or assuming liability for compensation. After service termination, your account and related data may be deleted.</p>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-edit"></i>12. Agreement Modification</h2>
+            <p>We reserve the right to modify this Agreement at any time based on changes in laws and regulations, business development needs, or other reasonable reasons. The modified Agreement will be published on this Website and shall take effect from the date of publication.</p>
+            <p>Your continued use of this Website after the Agreement modification indicates your agreement to accept the modified Agreement. If you do not agree with the modified Agreement, please stop using this Website.</p>
+            <p>For material modifications, we will notify you through Website announcements, emails, or other means.</p>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-landmark"></i>13. Governing Law and Dispute Resolution</h2>
+            <h3>13.1 Governing Law</h3>
+            <p>The formation, execution, interpretation, and dispute resolution of this Agreement shall be governed by the laws of the People's Republic of China (excluding the laws of the Hong Kong Special Administrative Region, Macao Special Administrative Region, and Taiwan region).</p>
+            <h3>13.2 Dispute Resolution</h3>
+            <p>Any dispute arising from or in connection with this Agreement shall first be resolved through friendly negotiation between the parties. If negotiation fails, either party shall have the right to file a lawsuit with the people's court with jurisdiction at the location of the Website operator.</p>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-address-card"></i>14. Contact Us</h2>
+            <p>If you have any questions, comments, or suggestions regarding this Agreement, you may contact us through:</p>
+            <ul>
+                <li><strong>Website Feedback</strong>: Submit through the feedback page on this Website</li>
+                <li><strong>Email</strong>: admin@slexion.com</li>
+                <li><strong>Website Address</strong>: https://slexion.com</li>
+            </ul>
+            <p>We will reply as soon as possible after receiving your feedback.</p>
+        </div>
+
+        <div class="glitch-line"></div>
+
+        <div class="card" style="border-left-color:#f0f;">
+            <h2><i class="fas fa-check-circle"></i>Agreement Confirmation</h2>
+            <p>You have read and understood the entire content of this Agreement, especially the terms marked in bold or red. You agree to all terms of this Agreement and undertake to comply with relevant laws, regulations, and this Agreement when using this Website.</p>
+            <p>If you have any questions, please consult us through the above contact information before using this Website.</p>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2026 Slexion. All Rights Reserved.</p>
+            <p style="margin-top:8px;"><a href="/">Back to Home</a> | <a href="/feedback/feedback.html">Feedback</a></p>
+        </div>
+    </div>
+
+    <script src="/navbar.js"></script>
+    <script src="/i18n.js"></script>
+    <script src="/account.js"></script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Hub | Cyberpunk</title>
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI",sans-serif;
+}
+body{
+    background:#050010;
+    background-image:
+        radial-gradient(circle at 20% 10%, #22004433 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, #00225533 0%, transparent 40%);
+    min-height:100vh;
+    color:#fff;
+    overflow-x:hidden;
+    position:relative;
+}
+/* 扫描线特效 */
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background-image:repeating-linear-gradient(
+        transparent 0px,
+        transparent 2px,
+        rgba(0,0,0,0.15) 2px,
+        rgba(0,0,0,0.15) 4px
+    );
+    pointer-events:none;
+    z-index:99;
+}
+/* Liquid Glass 背景彩色光晕 */
+.blobs{
+    position:fixed;
+    inset:-10%;
+    z-index:0;
+    pointer-events:none;
+    background:
+        radial-gradient(circle at 15% 20%, rgba(0,255,255,0.28), transparent 42%),
+        radial-gradient(circle at 85% 25%, rgba(255,0,255,0.24), transparent 42%),
+        radial-gradient(circle at 50% 85%, rgba(60,110,255,0.30), transparent 45%),
+        radial-gradient(circle at 90% 80%, rgba(140,60,255,0.22), transparent 40%);
+    filter:blur(22px);
+    animation:blobFloat 16s ease-in-out infinite alternate;
+}
+@keyframes blobFloat{
+    0%{transform:translate(0,0) scale(1);}
+    100%{transform:translate(3%,2%) scale(1.06);}
+}
+.container{
+    max-width:1100px;
+    margin:0 auto;
+    padding:60px 20px;
+    text-align:center;
+    position:relative;
+    z-index:1;
+}
+/* 故障风标题 */
+.glitch{
+    font-size:48px;
+    font-weight:bold;
+    position:relative;
+    letter-spacing:6px;
+    color:#fff;
+    margin-bottom:12px;
+}
+.glitch::before{
+    content:attr(data-text);
+    position:absolute;
+    left:-3px;
+    color:#0ff;
+    clip-path:inset(0 0 50% 0);
+}
+.glitch::after{
+    content:attr(data-text);
+    position:absolute;
+    left:3px;
+    color:#f0f;
+    clip-path:inset(50% 0 0 0);
+}
+.subtitle{
+    color:#a0a0ff;
+    letter-spacing:3px;
+    margin-bottom:60px;
+    font-size:16px;
+}
+/* 游戏按钮卡片容器 */
+.game-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px,1fr));
+    gap:26px;
+}
+/* 赛博卡片（Liquid Glass） */
+.game-card{
+    background:rgba(255,255,255,0.05);
+    -webkit-backdrop-filter:blur(18px) saturate(180%) brightness(1.12);
+    backdrop-filter:blur(18px) saturate(180%) brightness(1.12);
+    border:1px solid rgba(255,255,255,0.16);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.08), 0 12px 32px rgba(0,0,0,0.40);
+    padding:30px 16px;
+    border-radius:20px;
+    cursor:pointer;
+    transition:0.3s ease;
+    position:relative;
+    overflow:hidden;
+    z-index:1;
+}
+.game-card::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:-100%;
+    width:100%;
+    height:100%;
+    background:linear-gradient(90deg,transparent,#9922ff33,transparent);
+    transition:0.4s;
+}
+.game-card::after{
+    content:"";
+    position:absolute;
+    top:0;left:0;right:0;height:45%;
+    background:linear-gradient(180deg,rgba(255,255,255,0.09),transparent);
+    pointer-events:none;
+}
+.game-card:hover::before{
+    left:100%;
+}
+.game-card:hover{
+    border-color:#cc22ff;
+    box-shadow:0 0 22px #9922ff55, 0 0 40px #00ccff33;
+    transform:translateY(-6px);
+}
+.game-card h3{
+    font-size:20px;
+    color:#0ff;
+    margin-bottom:10px;
+}
+.game-card p{
+    color:#bbbbdd;
+    font-size:14px;
+}
+footer{
+    margin-top:80px;
+    color:#666699;
+    font-size:13px;
+    letter-spacing:1px;
+}
+</style>
+</head>
+<body>
+<div class="blobs"></div>
+<div class="container">
+    <h1 class="glitch" data-text="GAME HUB">GAME HUB</h1>
+    <p class="subtitle">CYBERPUNK GAME STATION</p>
+
+    <div class="game-grid">
+        <!-- 贪吃蛇 -->
+        <a href="/snake" style="text-decoration:none;color:inherit;">
+            <div class="game-card">
+                <h3 data-en="Snake">贪吃蛇</h3>
+                <p data-en="A cyberpunk-styled Snake game, click to play">富有CyberPunk味的贪吃蛇，点开即玩</p>
+            </div>
+        </a>
+        <!-- 斗兽棋 -->
+        <a href="/beastplay" style="text-decoration:none;color:inherit;">
+            <div class="game-card">
+                <h3 data-en="Animal Chess">斗兽棋</h3>
+                <p data-en="A small single-player Animal Chess game">小型斗兽棋，一个人玩</p>
+            </div>
+        </a>
+        <!-- 斗地主 -->
+        <a href="/doudizhu" style="text-decoration:none;color:inherit;">
+            <div class="game-card">
+                <h3 data-en="Dou Dizhu">斗地主</h3>
+                <p data-en="Classic Chinese card game, login required, supports AI">经典斗地主，需登录，支持AI对战</p>
+            </div>
+        </a>
+        <!-- CS:GO 网页版 -->
+        <a href="https://slexion.com/csgo-web/index.html" target="_blank" style="text-decoration:none;color:inherit;">
+            <div class="game-card">
+                <h3 data-en="CS:GO Web">CS:GO 网页版</h3>
+                <p data-en="Browser-based CS:GO, opens in new tab">网页版CS:GO，点击新标签页打开</p>
+            </div>
+        </a>
+        <!-- 2048 无限模式 -->
+        <a href="/2048" style="text-decoration:none;color:inherit;">
+            <div class="game-card">
+                <h3 data-en="2048 Infinite">2048 无限模式</h3>
+                <p data-en="Classic 2048 puzzle game, infinite mode, no win limit">经典2048益智游戏，无限模式，无胜利限制</p>
+            </div>
+        </a>
+    </div>
+
+    <footer>
+        © 2026 Cyber Code Station | All Programs
+    </footer>
+</div>
+<script src="/navbar.js"></script>
+<script src="/i18n.js"></script>
+<script src="/account.js"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+# Slexion.com robots.txt
+# https://slexion.com
+
+User-agent: *
+Allow: /
+Disallow: /account/
+Disallow: /admin/
+Disallow: /lib/
+Disallow: /config/
+Disallow: /*.php$
+Disallow: /*.json$
+Disallow: /*.log$
+Disallow: /*.sql$
+Disallow: /*.bak$
+Disallow: /*.old$
+Disallow: /tmp/
+Disallow: /backup/
+
+# 网站地图
+Sitemap: https://slexion.com/sitemap.xml
